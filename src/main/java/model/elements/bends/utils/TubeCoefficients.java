@@ -69,7 +69,7 @@ public abstract class TubeCoefficients {
 
     public static double calculateEvenGrainedPipeLambda(double re, double relativeRoughness) {//TODO Calculation for Re < 2000
         // Находим индексы для интерполяции
-        int i = findRoughnessIndex(relativeRoughness);
+        int i = Functions.lineSearchNeighborIndices(relativeRoughness, ROUGHNESS_EVEN_GRAINED_PIPES)[0];
         int j = findReynoldsIndex(re);
 
         // Определяем соседние индекс
@@ -114,16 +114,6 @@ public abstract class TubeCoefficients {
         return new int[]{left, right};
     }
 
-    private static int findRoughnessIndex(double relativeRoughness) {
-        // Линейный поиск для шероховатости
-        for (int i = 0; i < ROUGHNESS_EVEN_GRAINED_PIPES.length - 1; i++) {
-            if (relativeRoughness >= ROUGHNESS_EVEN_GRAINED_PIPES[i + 1] && relativeRoughness <= ROUGHNESS_EVEN_GRAINED_PIPES[i]) {
-                return i;
-            }
-        }
-        return relativeRoughness >= ROUGHNESS_EVEN_GRAINED_PIPES[ROUGHNESS_EVEN_GRAINED_PIPES.length - 1] ?
-                ROUGHNESS_EVEN_GRAINED_PIPES.length - 2 : 0;
-    }
 
     private static int findReynoldsIndex(double re) {
         int left = 0;
