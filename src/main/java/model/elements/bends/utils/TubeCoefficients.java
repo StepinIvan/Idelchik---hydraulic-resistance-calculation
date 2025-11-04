@@ -69,19 +69,17 @@ public abstract class TubeCoefficients {
 
     public static double calculateEvenGrainedPipeLambda(double re, double relativeRoughness) {//TODO Calculation for Re < 2000
         // Находим индексы для интерполяции
-        int i = Functions.lineSearchNeighborIndices(relativeRoughness, ROUGHNESS_EVEN_GRAINED_PIPES)[0];
+        int[] i = Functions.lineSearchNeighborIndices(relativeRoughness, ROUGHNESS_EVEN_GRAINED_PIPES);
         int j = findReynoldsIndex(re);
 
-        // Определяем соседние индекс
-        int i1 = Math.min(i, ROUGHNESS_EVEN_GRAINED_PIPES.length - 2);
         int j1 = Math.min(j, RE_EVEN_GRAINED_PIPES.length - 2);
 
         // Билинейная интерполяция
         return Functions.bilinearInterpolation(relativeRoughness, re,
-                ROUGHNESS_EVEN_GRAINED_PIPES[i1], ROUGHNESS_EVEN_GRAINED_PIPES[i1 + 1],
+                ROUGHNESS_EVEN_GRAINED_PIPES[i[0]], ROUGHNESS_EVEN_GRAINED_PIPES[i[1]],
                 RE_EVEN_GRAINED_PIPES[j1], RE_EVEN_GRAINED_PIPES[j1 + 1],
-                LAMBDA_DATA_EVEN_GRAINED_PIPES[i1][j1], LAMBDA_DATA_EVEN_GRAINED_PIPES[i1][j1 + 1],
-                LAMBDA_DATA_EVEN_GRAINED_PIPES[i1 + 1][j1], LAMBDA_DATA_EVEN_GRAINED_PIPES[i1 + 1][j1 + 1]);
+                LAMBDA_DATA_EVEN_GRAINED_PIPES[i[0]][j1], LAMBDA_DATA_EVEN_GRAINED_PIPES[i[0]][j1 + 1],
+                LAMBDA_DATA_EVEN_GRAINED_PIPES[i[1]][j1], LAMBDA_DATA_EVEN_GRAINED_PIPES[i[1]][j1 + 1]);
     }
 
 
@@ -115,7 +113,7 @@ public abstract class TubeCoefficients {
     }
 
 
-    private static int findReynoldsIndex(double re) {
+    public static int findReynoldsIndex(double re) {
         int left = 0;
         int right = RE_EVEN_GRAINED_PIPES.length - 1;
 
