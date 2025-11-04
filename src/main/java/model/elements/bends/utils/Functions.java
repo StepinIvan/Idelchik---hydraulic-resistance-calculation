@@ -12,24 +12,30 @@ public abstract class Functions {
     }
 
     public static int[] lineSearchNeighborIndices(double desiredValue, double[] valuesArray) {
-        int[] indices = new int[2];
         boolean ascendingOrder = isAscendingOrder(valuesArray);
+        // Проверка выхода за левую границу
+        if (ascendingOrder && desiredValue <= valuesArray[0] ||
+                !ascendingOrder && desiredValue >= valuesArray[0]) {
+            return new int[]{0, 0};
+        }
+        // Проверка выхода за правую границу
+        int lastIndex = valuesArray.length - 1;
+        if (ascendingOrder && desiredValue >= valuesArray[lastIndex] ||
+                !ascendingOrder && desiredValue <= valuesArray[lastIndex]) {
+            return new int[]{lastIndex, lastIndex};
+        }
         for (int i = 0; i < valuesArray.length - 1; i++) {
             if (ascendingOrder) {
                 if (desiredValue >= valuesArray[i] && desiredValue <= valuesArray[i + 1]) {
-                    indices[0] = i;
-                    break;
+                    return new int[]{i, i + 1};
                 }
             } else {
                 if (desiredValue <= valuesArray[i] && desiredValue >= valuesArray[i + 1]) {
-                    indices[0] = i;
-                    break;
+                    return new int[]{i, i + 1};
                 }
             }
-
         }
-        indices[1] = indices[0] + 1;
-        return indices;
+        return new int[]{0, 0};
     }
 
     public static double interpolateLinear(double x1,double x2, double y1,double y2, double userValueOfx) {
@@ -55,20 +61,4 @@ public abstract class Functions {
 
         return ascending;
     }
-//    public static int binarySearch(int[] array, int elementToSearch) {
-//        int firstIndex = 0;
-//        int lastIndex = array.length - 1;
-//
-//        while(firstIndex <= lastIndex) {
-//            int middleIndex = (firstIndex + lastIndex) / 2;
-//            if (array[middleIndex] == elementToSearch) {
-//                return middleIndex;
-//            } else if (array[middleIndex] < elementToSearch) {
-//                firstIndex = middleIndex + 1;
-//            } else if (array[middleIndex] > elementToSearch) {
-//                lastIndex = middleIndex - 1;
-//            }
-//        }
-//        return -1;
-//    }
 }
