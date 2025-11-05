@@ -61,4 +61,20 @@ public abstract class Functions {
 
         return ascending;
     }
+    public static int binarySearchLeftNeighborIndex(double value, double[] valuesArray) {
+        int left = 0;
+        int right = valuesArray.length - 1;
+
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (valuesArray[mid] == value) {
+                return mid;
+            } else if (valuesArray[mid] < value) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return Math.max(0, left - 1);
+    }
 }
