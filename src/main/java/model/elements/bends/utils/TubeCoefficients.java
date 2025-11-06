@@ -70,16 +70,14 @@ public abstract class TubeCoefficients {
     public static double calculateEvenGrainedPipeLambda(double re, double relativeRoughness) {//TODO Calculation for Re < 2000
         // Находим индексы для интерполяции
         int[] i = Functions.lineSearchNeighborIndices(relativeRoughness, ROUGHNESS_EVEN_GRAINED_PIPES);
-        int j = Functions.binarySearchLeftNeighborIndex(re, RE_EVEN_GRAINED_PIPES);
-
-        int j1 = Math.min(j, RE_EVEN_GRAINED_PIPES.length - 2);
+        int[] j = Functions.binarySearchNearestIndices(re, RE_EVEN_GRAINED_PIPES);
 
         // Билинейная интерполяция
         return Functions.bilinearInterpolation(relativeRoughness, re,
                 ROUGHNESS_EVEN_GRAINED_PIPES[i[0]], ROUGHNESS_EVEN_GRAINED_PIPES[i[1]],
-                RE_EVEN_GRAINED_PIPES[j1], RE_EVEN_GRAINED_PIPES[j1 + 1],
-                LAMBDA_DATA_EVEN_GRAINED_PIPES[i[0]][j1], LAMBDA_DATA_EVEN_GRAINED_PIPES[i[0]][j1 + 1],
-                LAMBDA_DATA_EVEN_GRAINED_PIPES[i[1]][j1], LAMBDA_DATA_EVEN_GRAINED_PIPES[i[1]][j1 + 1]);
+                RE_EVEN_GRAINED_PIPES[j[0]], RE_EVEN_GRAINED_PIPES[j[1]],
+                LAMBDA_DATA_EVEN_GRAINED_PIPES[i[0]][j[0]], LAMBDA_DATA_EVEN_GRAINED_PIPES[i[0]][j[1]],
+                LAMBDA_DATA_EVEN_GRAINED_PIPES[i[1]][j[0]], LAMBDA_DATA_EVEN_GRAINED_PIPES[i[1]][j[1]]);
     }
 
 
@@ -91,24 +89,9 @@ public abstract class TubeCoefficients {
             return LAMBDA_SMOOTH_PIPES[LAMBDA_SMOOTH_PIPES.length - 1];
         }
         // Бинарный поиск для нахождения интервала
-        int[] indices = findReIndices(re);
+        int[] indices = Functions.binarySearchNearestIndices(re, RE_SMOOTH_PIPES);
         return Functions.interpolateLinear(RE_SMOOTH_PIPES[indices[0]], RE_SMOOTH_PIPES[indices[1]],
                 LAMBDA_SMOOTH_PIPES[indices[0]], LAMBDA_SMOOTH_PIPES[indices[1]], re);
 
-    }
-
-    private static int[] findReIndices(double re) {
-        int left = 0;
-        int right = RE_SMOOTH_PIPES.length - 1;
-
-        while (right - left > 1) {
-            int mid = left + (right - left) / 2;
-            if (RE_SMOOTH_PIPES[mid] < re) {
-                left = mid;
-            } else {
-                right = mid;
-            }
-        }
-        return new int[]{left, right};
     }
 }

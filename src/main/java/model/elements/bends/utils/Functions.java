@@ -38,10 +38,11 @@ public abstract class Functions {
         return new int[]{0, 0};
     }
 
-    public static double interpolateLinear(double x1,double x2, double y1,double y2, double userValueOfx) {
-        double k = (userValueOfx - x2) / (x2 - x1);
+    public static double interpolateLinear(double x1, double x2, double y1, double y2, double userValueOfx) {
+        double k = (userValueOfx - x1) / (x2 - x1);
         return y1 + k * (y2 - y1);
     }
+
     public static boolean isAscendingOrder(double[] array) {
         boolean ascending = true;
         boolean descending = true;
@@ -61,6 +62,7 @@ public abstract class Functions {
 
         return ascending;
     }
+
     public static int binarySearchLeftNeighborIndex(double value, double[] valuesArray) {
         int left = 0;
         int right = valuesArray.length - 1;
@@ -76,5 +78,52 @@ public abstract class Functions {
             }
         }
         return Math.max(0, left - 1);
+    }
+
+    public static int[] binarySearchNearestIndices(double targetValue, double[] valuesArray) {
+        boolean isAscendingOrder = isAscendingOrder(valuesArray);
+        // Проверка на пустой массив
+        if (valuesArray.length == 0) {
+            throw new IllegalArgumentException("Zero length array");
+        }
+
+        // Проверка выхода за границы массива
+        if (isAscendingOrder) {
+            if (targetValue <= valuesArray[0]) return new int[]{0, 0};
+            if (targetValue >= valuesArray[valuesArray.length - 1]) return new int[]{valuesArray.length - 1, valuesArray.length - 1};
+        } else {
+            if (targetValue >= valuesArray[0]) return new int[]{0, 0};
+            if (targetValue <= valuesArray[valuesArray.length - 1]) return new int[]{valuesArray.length - 1, valuesArray.length - 1};
+        }
+
+        int left = 0;
+        int right = valuesArray.length - 1;
+
+        // Бинарный поиск
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            double midValue = valuesArray[mid];
+
+            if (isAscendingOrder) {
+                if (midValue < targetValue) {
+                    left = mid + 1;
+                } else if (midValue > targetValue) {
+                    right = mid - 1;
+                } else {
+                    // Элемент найден
+                    return new int[]{mid, mid + 1};
+                }
+            } else {
+                if (midValue > targetValue) {
+                    left = mid + 1;
+                } else if (midValue < targetValue) {
+                    right = mid - 1;
+                } else {
+                    // Элемент найден
+                    return new int[]{mid, mid + 1};
+                }
+            }
+        }
+        return new int[]{right, left};
     }
 }
