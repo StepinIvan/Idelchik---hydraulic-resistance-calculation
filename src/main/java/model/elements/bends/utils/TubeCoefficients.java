@@ -28,7 +28,7 @@ public abstract class TubeCoefficients {
             4e5, 6e5, 1e6, 2e6, 4e6, 6e6, 1e7, 2e7, 1e8
     };
 
-    private static final double[][] LAMBDA_DATA_EVEN_GRAINED_PIPES = {
+    private static final double[][] LAMBDA_DATA_EVEN_GRAINED_PIPES = {//TODO check table values
             // Re: 2e3-2e5 (первые 10 столбцов)
             {0.032, 0.052, 0.060, 0.063, 0.069, 0.072, 0.072, 0.072, 0.072, 0.072,
                     0.072, 0.072, 0.072, 0.072, 0.072, 0.072, 0.072, 0.072, 0.072},
@@ -64,20 +64,67 @@ public abstract class TubeCoefficients {
             {0.032, 0.040, 0.040, 0.038, 0.033, 0.027, 0.023, 0.021, 0.018, 0.017,
                     0.014, 0.013, 0.012, 0.011, 0.011, 0.011, 0.012, 0.012, 0.012},
             {0.032, 0.040, 0.040, 0.038, 0.033, 0.027, 0.023, 0.021, 0.018, 0.017,
-                    0.014, 0.013, 0.012, 0.011, 0.010, 0.010, 0.010, 0.010, 0.010}
+                    0.014, 0.013, 0.012, 0.011, 0.010, 0.010, 0.010, 0.010, 0.011}
     };
 
     public static double calculateEvenGrainedPipeLambda(double re, double relativeRoughness) {//TODO Calculation for Re < 2000
-        // Находим индексы для интерполяции
-        int[] i = Functions.lineSearchNeighborIndices(relativeRoughness, ROUGHNESS_EVEN_GRAINED_PIPES);
-        int[] j = Functions.binarySearchNearestIndices(re, RE_EVEN_GRAINED_PIPES);
+        //Граничные значения для Re
+        double reMin = RE_EVEN_GRAINED_PIPES[0];
+        double reMax = RE_EVEN_GRAINED_PIPES[RE_EVEN_GRAINED_PIPES.length - 1];
 
-        // Билинейная интерполяция
-        return Functions.bilinearInterpolation(relativeRoughness, re,
-                ROUGHNESS_EVEN_GRAINED_PIPES[i[0]], ROUGHNESS_EVEN_GRAINED_PIPES[i[1]],
-                RE_EVEN_GRAINED_PIPES[j[0]], RE_EVEN_GRAINED_PIPES[j[1]],
-                LAMBDA_DATA_EVEN_GRAINED_PIPES[i[0]][j[0]], LAMBDA_DATA_EVEN_GRAINED_PIPES[i[0]][j[1]],
-                LAMBDA_DATA_EVEN_GRAINED_PIPES[i[1]][j[0]], LAMBDA_DATA_EVEN_GRAINED_PIPES[i[1]][j[1]]);
+        // Определяем индексы для шероховатости с учетом границ
+        int[] deltaIndices;
+        if (relativeRoughness > ROUGHNESS_EVEN_GRAINED_PIPES[0]) {
+            // За левой границей массива шероховатости
+            deltaIndices = new int[]{0, 0};
+        } else if (relativeRoughness < ROUGHNESS_EVEN_GRAINED_PIPES[ROUGHNESS_EVEN_GRAINED_PIPES.length - 1]) {
+            // За правой границей массива шероховатости
+            deltaIndices = new int[]{ROUGHNESS_EVEN_GRAINED_PIPES.length - 1, ROUGHNESS_EVEN_GRAINED_PIPES.length - 1};
+        } else {
+            // В пределах массива шероховатости
+            deltaIndices = Functions.lineSearchNeighborIndices(relativeRoughness, ROUGHNESS_EVEN_GRAINED_PIPES);
+        }
+
+        // Определяем индексы для Re с учетом границ
+        int[] reIndices;
+        if (re < reMin) {
+            // За левой границей массива Re
+            reIndices = new int[]{0, 0};
+        } else if (re > reMax) {
+            // За правой границей массива Re
+            reIndices = new int[]{RE_EVEN_GRAINED_PIPES.length - 1, RE_EVEN_GRAINED_PIPES.length - 1};
+        } else {
+            // В пределах массива Re
+            reIndices = Functions.binarySearchNearestIndices(re, RE_EVEN_GRAINED_PIPES);
+        }
+
+        // Значения шероховатости и Re для интерполяции
+        double rough1 = ROUGHNESS_EVEN_GRAINED_PIPES[deltaIndices[0]];
+        double rough2 = ROUGHNESS_EVEN_GRAINED_PIPES[deltaIndices[1]];
+        double re1 = RE_EVEN_GRAINED_PIPES[reIndices[0]];
+        double re2 = RE_EVEN_GRAINED_PIPES[reIndices[1]];
+
+        // Значения λ из таблицы
+        double q11 = LAMBDA_DATA_EVEN_GRAINED_PIPES[deltaIndices[0]][reIndices[0]];
+        double q12 = LAMBDA_DATA_EVEN_GRAINED_PIPES[deltaIndices[0]][reIndices[1]];
+        double q21 = LAMBDA_DATA_EVEN_GRAINED_PIPES[deltaIndices[1]][reIndices[0]];
+        double q22 = LAMBDA_DATA_EVEN_GRAINED_PIPES[deltaIndices[1]][reIndices[1]];
+
+        if (deltaIndices[0] == deltaIndices[1] && reIndices[0] == reIndices[1]) {
+            // Оба параметра за границами или на границах - возвращаем угловое значение
+            return LAMBDA_DATA_EVEN_GRAINED_PIPES[deltaIndices[0]][reIndices[0]];
+        } else if (deltaIndices[0] == deltaIndices[1]) {
+            // Шероховатость за границами, интерполируем только по Re
+            return Functions.interpolateLinear(re1, re2, q11, q12, re);
+        } else if (reIndices[0] == reIndices[1]) {
+            // Re за границами, интерполируем только по шероховатости
+            return Functions.interpolateLinear(rough1, rough2, q11, q21, relativeRoughness);
+        } else {
+            // Оба параметра в пределах массивов - билинейная интерполяция
+            return Functions.bilinearInterpolation(relativeRoughness, re,
+                    rough1, rough2, re1, re2,
+                    q11, q12, q21, q22);
+        }
     }
 
 
