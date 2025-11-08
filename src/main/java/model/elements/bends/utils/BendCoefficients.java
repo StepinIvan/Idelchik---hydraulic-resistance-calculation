@@ -62,20 +62,26 @@ public abstract class BendCoefficients {
     }
 
     private static double calculateForLowR0D0(double re, double relativeRoughness) {
-        if (re <= RE_MID) {
-            // Для Re 3·10³ - 4·10⁴ всегда 1.0
-            return 1.0;
-        } else if ((re > RE_MID && re <= RE_MID + TRANSITION_REGION) && relativeRoughness <= 0.001) {
-            return Functions.blend(1., 1.0 + 0.5 * 1000 * relativeRoughness, RE_MID,
-                    RE_MID + TRANSITION_REGION, re);
-        } else {
-            // Для Re > 4·10⁴
-            if (relativeRoughness <= ROUGHNESS_THRESHOLD) {
-                return 1.0 + 0.5 * 1000 * relativeRoughness;//TODO smoothing for crossing 40000
+        if (relativeRoughness <= 0.001) {
+            if (re <= RE_MID) {
+                return 1.0;
+            } else if (re > RE_MID && re <= RE_MID + TRANSITION_REGION) {
+                return Functions.blend(1., 1.0 + 0.5 * 1000 * relativeRoughness, RE_MID,
+                        RE_MID + TRANSITION_REGION, re);
             } else {
-                return 1.5;//TODO smoothing for crossing 40000
+                return 1.0 + 0.5 * 1000 * relativeRoughness;
+            }
+        } else {
+            if (re <= RE_MID) {
+                return 1.0;
+            } else if (re > RE_MID && re <= RE_MID + TRANSITION_REGION) {
+                return Functions.blend(1., 1.5, RE_MID,
+                        RE_MID + TRANSITION_REGION, re);
+            } else {
+                return 1.5;
             }
         }
+
     }
 
     private static double calculateForHighR0D0(double re, double relativeRoughness) {//TODO check smoothing
