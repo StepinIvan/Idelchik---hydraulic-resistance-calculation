@@ -28,7 +28,7 @@ public abstract class TubeCoefficients {
             4e5, 6e5, 1e6, 2e6, 4e6, 6e6, 1e7, 2e7, 1e8
     };
 
-    private static final double[][] LAMBDA_DATA_EVEN_GRAINED_PIPES = {//TODO check table values
+    private static final double[][] LAMBDA_DATA_EVEN_GRAINED_PIPES = {
             // Re: 2e3-2e5 (первые 10 столбцов)
             {0.032, 0.052, 0.060, 0.063, 0.069, 0.072, 0.072, 0.072, 0.072, 0.072,
                     0.072, 0.072, 0.072, 0.072, 0.072, 0.072, 0.072, 0.072, 0.072},
