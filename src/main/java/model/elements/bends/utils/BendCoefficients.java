@@ -84,28 +84,41 @@ public abstract class BendCoefficients {
 
     }
 
-    private static double calculateForHighR0D0(double re, double relativeRoughness) {//TODO check smoothing
-        double lambdaRough;
-        double lambdaSmooth;
-        if (re <= RE_MID) {
-            // Для Re 3·10³ - 4·10⁴ всегда 1.0
-            return 1.0;
-        } else if (re > RE_MID && re <= RE_HIGH) {
+    private static double calculateForHighR0D0(double re, double relativeRoughness) {
+        //TODO check smoothing for lambdaRough / lambdaSmooth regions
+        if (relativeRoughness <= 0.001) {
+            double lambdaRough;
+            double lambdaSmooth;
             lambdaRough = TubeCoefficients.calculateEvenGrainedPipeLambda(re, relativeRoughness);
             lambdaSmooth = TubeCoefficients.calculateSmoothPipeLambda(re);
-            return Functions.blend(1., lambdaRough / lambdaSmooth, RE_MID,
-                    RE_MID + TRANSITION_REGION, re);
-        } else if (re > RE_HIGH && re <= RE_HIGH + TRANSITION_REGION) {
-            lambdaRough = TubeCoefficients.calculateEvenGrainedPipeLambda(re, relativeRoughness);
-            lambdaSmooth = TubeCoefficients.calculateSmoothPipeLambda(re);
-            return Functions.blend(lambdaRough / lambdaSmooth, 1.0 + 1000 * relativeRoughness, RE_HIGH,
-                    RE_HIGH + TRANSITION_REGION, re);
-        } else {
-            // Для Re > 2·10⁵
-            if (relativeRoughness <= ROUGHNESS_THRESHOLD) {
-                return 1.0 + 1000 * relativeRoughness;
+            double lambdaRoughBoundaryMid = TubeCoefficients.calculateEvenGrainedPipeLambda(
+                    RE_MID + TRANSITION_REGION, relativeRoughness);
+            double lambdaSmoothBoundaryMid = TubeCoefficients.calculateSmoothPipeLambda(RE_MID + TRANSITION_REGION);
+            double lambdaRoughBoundaryHigh = TubeCoefficients.calculateEvenGrainedPipeLambda(
+                    RE_HIGH + TRANSITION_REGION, relativeRoughness);
+            double lambdaSmoothBoundaryHigh = TubeCoefficients.calculateSmoothPipeLambda(
+                    RE_HIGH + TRANSITION_REGION);
+            if (re <= RE_MID) {
+                return 1.0;
+            } else if (re > RE_MID && re <= RE_MID + TRANSITION_REGION) {
+                return Functions.blend(1., lambdaRoughBoundaryMid / lambdaSmoothBoundaryMid, RE_MID,
+                        RE_MID + TRANSITION_REGION, re);
+            } else if (re > RE_MID + TRANSITION_REGION && re <= RE_HIGH){
+                return lambdaRough / lambdaSmooth;
+            } else if (re > RE_HIGH && re <= RE_HIGH + TRANSITION_REGION) {
+                return Functions.blend(lambdaRoughBoundaryHigh / lambdaSmoothBoundaryHigh,
+                        1.0 + 1000 * relativeRoughness, RE_HIGH, RE_HIGH + TRANSITION_REGION, re);
             } else {
-                return 2.0;
+                return 1.0 + 1000 * relativeRoughness;
+            }
+        } else {
+            if (re <= RE_MID) {
+                return 1.0;
+            } else if (re > RE_MID && re <= RE_MID + TRANSITION_REGION) {
+                return Functions.blend(1., 2., RE_MID,
+                        RE_MID + TRANSITION_REGION, re);
+            } else {
+                return 2.;
             }
         }
     }
