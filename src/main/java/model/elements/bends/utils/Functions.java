@@ -90,10 +90,12 @@ public abstract class Functions {
         // Проверка выхода за границы массива
         if (isAscendingOrder) {
             if (targetValue <= valuesArray[0]) return new int[]{0, 0};
-            if (targetValue >= valuesArray[valuesArray.length - 1]) return new int[]{valuesArray.length - 1, valuesArray.length - 1};
+            if (targetValue >= valuesArray[valuesArray.length - 1])
+                return new int[]{valuesArray.length - 1, valuesArray.length - 1};
         } else {
             if (targetValue >= valuesArray[0]) return new int[]{0, 0};
-            if (targetValue <= valuesArray[valuesArray.length - 1]) return new int[]{valuesArray.length - 1, valuesArray.length - 1};
+            if (targetValue <= valuesArray[valuesArray.length - 1])
+                return new int[]{valuesArray.length - 1, valuesArray.length - 1};
         }
 
         int left = 0;
@@ -125,5 +127,17 @@ public abstract class Functions {
             }
         }
         return new int[]{right, left};
+    }
+
+    public static double blend(double y1, double y2, double x1, double x2, double x) {
+        double u = (x - x1) / (x2 - x1);
+        double transition = 3 * Math.pow(u, 2) - 2 * Math.pow(u, 3);
+        if (x <= x1) {
+            return y1;
+        } else if (x >= x2) {
+            return y2;
+        } else {
+            return (1 - transition) * y1 + transition * y2;
+        }
     }
 }

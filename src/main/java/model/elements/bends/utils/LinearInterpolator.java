@@ -20,7 +20,7 @@ public class LinearInterpolator {
         if (x.length == 0) {
             throw new IllegalArgumentException("Arrays must be nonzero");
         }
-        for (int i = 0; i < x.length; i++) {
+        for (int i = 0; i < x.length - 1; i++) {
             if (x[i + 1] <= x[i]) {
                 throw new IllegalArgumentException("X array must be strictly sorted in ascending order");
             }

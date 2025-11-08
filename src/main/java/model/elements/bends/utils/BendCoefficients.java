@@ -1,6 +1,7 @@
 package model.elements.bends.utils;
 
 public abstract class BendCoefficients {
+    private static double TRANSITION_REGION = 1000.;
     private static final double[] BEND_ANGLE_FOR_A1 = {0., 20., 30., 45., 60., 75., 90., 110., 130., 150., 180.};
     private static final double[] A1 = {0., 0.31, 0.45, 0.6, 0.78, 0.9, 1., 1.13, 1.20, 1.28, 1.40};
     private static final double[] R0_D0_RATIO = {0.50, 0.60, 0.70, 0.80, 0.90, 1.00, 1.25, 1.50, 2.0, 4.0, 6.0, 8.0,
@@ -20,7 +21,8 @@ public abstract class BendCoefficients {
     private static final double RE_HIGH = 200_000.0;
     private static final double ROUGHNESS_THRESHOLD = 0.001;
     private static final double R0_D0_THRESHOLD = 0.55;
-    private static final double[] RE_VALUES = {0.1, 0.14, 0.2, 0.3, 0.4, 0.6, 0.8, 1.0, 1.4, 2.0, 3.0, 4.0};
+    private static final double[] RE_VALUES = {0.1, 0.14, 0.2, 0.3, 0.4, 0.6,
+            0.8, 1.0, 1.4, 2.0, 3.0, 4.0};
     private static final double[][] K_RE_TABLE = {
             {1.40, 1.33, 1.26, 1.19, 1.14, 1.09, 1.06, 1.04, 1.0, 1.0, 1.0, 1.0},
             {1.67, 1.58, 1.49, 1.40, 1.34, 1.26, 1.21, 1.19, 1.17, 1.14, 1.06, 1.0},
@@ -48,7 +50,7 @@ public abstract class BendCoefficients {
     }
 
     public static double calculateKDelta(double r0d0Ratio, double re, double relativeRoughness) {
-        if (relativeRoughness == 0.0) {
+        if (relativeRoughness == 0.0) {//TODO <?
             return 1.0;
         }
         boolean isLowR0D0 = r0d0Ratio <= R0_D0_THRESHOLD;
@@ -63,29 +65,35 @@ public abstract class BendCoefficients {
         if (re <= RE_MID) {
             // Для Re 3·10³ - 4·10⁴ всегда 1.0
             return 1.0;
+        } else if ((re > RE_MID && re <= RE_MID + TRANSITION_REGION) && relativeRoughness <= 0.001) {
+            return Functions.blend(1., 1.0 + 0.5 * 1000 * relativeRoughness, RE_MID,
+                    RE_MID + TRANSITION_REGION, re);
         } else {
             // Для Re > 4·10⁴
             if (relativeRoughness <= ROUGHNESS_THRESHOLD) {
-                return 1.0 + 0.5 * 1000 * relativeRoughness;
+                return 1.0 + 0.5 * 1000 * relativeRoughness;//TODO smoothing for crossing 40000
             } else {
-                return 1.5;
+                return 1.5;//TODO smoothing for crossing 40000
             }
         }
     }
 
-    private static double calculateForHighR0D0(double re, double relativeRoughness) {
+    private static double calculateForHighR0D0(double re, double relativeRoughness) {//TODO check smoothing
+        double lambdaRough;
+        double lambdaSmooth;
         if (re <= RE_MID) {
             // Для Re 3·10³ - 4·10⁴ всегда 1.0
             return 1.0;
-        } else if (re <= RE_HIGH) {
-            // Для Re 4·10⁴ - 2·10⁵
-            if (relativeRoughness <= ROUGHNESS_THRESHOLD) {
-                double lambdaRough = TubeCoefficients.calculateEvenGrainedPipeLambda(re, relativeRoughness);
-                double lambdaSmooth = TubeCoefficients.calculateSmoothPipeLambda(re);
-                return lambdaRough / lambdaSmooth;//TODO Choice for different types of roughness
-            } else {
-                return 2.0;
-            }
+        } else if (re > RE_MID && re <= RE_HIGH) {
+            lambdaRough = TubeCoefficients.calculateEvenGrainedPipeLambda(re, relativeRoughness);
+            lambdaSmooth = TubeCoefficients.calculateSmoothPipeLambda(re);
+            return Functions.blend(1., lambdaRough / lambdaSmooth, RE_MID,
+                    RE_MID + TRANSITION_REGION, re);
+        } else if (re > RE_HIGH && re <= RE_HIGH + TRANSITION_REGION) {
+            lambdaRough = TubeCoefficients.calculateEvenGrainedPipeLambda(re, relativeRoughness);
+            lambdaSmooth = TubeCoefficients.calculateSmoothPipeLambda(re);
+            return Functions.blend(lambdaRough / lambdaSmooth, 1.0 + 1000 * relativeRoughness, RE_HIGH,
+                    RE_HIGH + TRANSITION_REGION, re);
         } else {
             // Для Re > 2·10⁵
             if (relativeRoughness <= ROUGHNESS_THRESHOLD) {
