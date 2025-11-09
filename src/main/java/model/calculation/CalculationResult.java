@@ -1,8 +1,7 @@
 package model.calculation;
 
-import model.elements.bends.utils.BendCoefficients;
-import model.elements.bends.utils.Functions;
-import model.elements.bends.utils.TubeCoefficients;
+import model.elements.utils.BendCoefficients;
+import model.elements.utils.TubeCoefficients;
 
 public class CalculationResult {
     public static void main(String[] args) {
