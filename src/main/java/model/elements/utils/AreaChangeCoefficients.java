@@ -22,7 +22,7 @@ public abstract class AreaChangeCoefficients {
         if (re <= 9.9) {
             return linePredictionSmallKsiM.interpolate(re);
         } else if (re > 9.9 && re < 10) {
-            return Functions.interpolateLinear(9.9,10,30.0/9.9, 3.1, re);
+            return Functions.interpolateLinear(9.9, 10, 30.0 / 9.9, 3.1, re);
         }
         //Граничные значения для Re
         double reMin = RE_VALUES[0];
