@@ -3,6 +3,11 @@ package model.elements.utils;
 public abstract class AreaChangeCoefficients {
     private static final double[] F0_F2_RATIO = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
     private static final double[] RE_VALUES = {10, 15, 20, 30, 40, 50, 100, 200, 500, 1000, 2000, 3000, 3300};
+    private static final double[] SMALL_RE_VALUES = {0.0001, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9.9};
+    private static final double[] SMALL_KSI_M_VALUES = {30.0 / 0.0001, 30.0, 30.0 / 2, 30.0 / 3, 30.0 / 4, 30.0 / 5,
+            30.0 / 6, 30.0 / 7, 30.0 / 8, 30.0 / 9, 30.0 / 9.9};
+    private static final LinearInterpolator linePredictionSmallKsiM =
+            new LinearInterpolator(SMALL_RE_VALUES, SMALL_KSI_M_VALUES);
 
     private static final double[][] KSI_M_VALUES = {
             {3.10, 3.20, 3.00, 2.40, 2.15, 1.95, 1.70, 1.65, 1.70, 2.00, 1.60, 1.00, 0.81},
@@ -12,7 +17,13 @@ public abstract class AreaChangeCoefficients {
             {3.10, 2.80, 2.30, 1.65, 1.35, 1.15, 0.90, 0.75, 0.65, 0.90, 0.65, 0.30, 0.25},
             {3.10, 2.70, 2.15, 1.55, 1.25, 1.05, 0.80, 0.60, 0.40, 0.60, 0.50, 0.20, 0.16}
     };
-    public static double calculateUniformSuddenAreaChangeKsiM(double re, double areaRatio) {//TODO Calculation for Re < 2000
+
+    public static double calculateUniformSuddenAreaChangeKsiM(double re, double areaRatio) {
+        if (re <= 9.9) {
+            return linePredictionSmallKsiM.interpolate(re);
+        } else if (re > 9.9 && re < 10) {
+            return Functions.interpolateLinear(9.9,10,30.0/9.9, 3.1, re);
+        }
         //Граничные значения для Re
         double reMin = RE_VALUES[0];
         double reMax = RE_VALUES[RE_VALUES.length - 1];
