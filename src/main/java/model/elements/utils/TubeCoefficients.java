@@ -1,4 +1,4 @@
-package model.elements.bends.utils;
+package model.elements.utils;
 
 public abstract class TubeCoefficients {
     private static final double[] RE_SMOOTH_PIPES = {

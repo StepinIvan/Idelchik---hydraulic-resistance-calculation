@@ -1,4 +1,4 @@
-package model.elements.bends.utils;
+package model.elements.utils;
 
 public class LinearInterpolator {
     private final double[] x;

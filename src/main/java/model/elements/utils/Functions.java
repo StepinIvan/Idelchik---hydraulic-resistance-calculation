@@ -1,4 +1,4 @@
-package model.elements.bends.utils;
+package model.elements.utils;
 
 public abstract class Functions {
     public static double bilinearInterpolation(double x, double y,

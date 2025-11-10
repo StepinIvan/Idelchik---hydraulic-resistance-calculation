@@ -1,4 +1,4 @@
-package model.elements.bends.utils;
+package model.elements.utils;
 
 public abstract class BendCoefficients {
     private static double TRANSITION_REGION = 1000.;

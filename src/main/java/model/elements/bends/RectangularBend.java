@@ -1,7 +1,7 @@
 package model.elements.bends;
 
-import model.elements.bends.utils.BendCoefficients;
-import model.elements.bends.utils.TubeCoefficients;
+import model.elements.utils.BendCoefficients;
+import model.elements.utils.TubeCoefficients;
 
 public class RectangularBend extends Bend {
     private final double absolutRoughness;
