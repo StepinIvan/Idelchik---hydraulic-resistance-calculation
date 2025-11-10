@@ -1,5 +1,6 @@
 package model.calculation;
 
+import model.elements.utils.AreaChangeCoefficients;
 import model.elements.utils.BendCoefficients;
 import model.elements.utils.TubeCoefficients;
 
@@ -8,5 +9,6 @@ public class CalculationResult {
         TubeCoefficients.calculateEvenGrainedPipeLambda(3000,0.045);
         TubeCoefficients.calculateSmoothPipeLambda(3000);
         BendCoefficients.calculateKDelta(0.51,41000, 0.01);
+        AreaChangeCoefficients.calculateUniformSuddenAreaChangeKsiM(10,0.1);
     }
 }

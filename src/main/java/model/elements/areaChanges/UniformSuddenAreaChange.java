@@ -24,7 +24,7 @@ public class UniformSuddenAreaChange extends AreaChange {
 
     @Override
     public String getElementType() {
-        return BendType.CIRCULAR.toString();
+        return AreaChangeType.SUDDEN_AREA_CHANGE.toString();
     }
 
     @Override
