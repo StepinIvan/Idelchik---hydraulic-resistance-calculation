@@ -22,8 +22,10 @@ public class PowerLowSuddenAreaChange extends AreaChange {
 
     @Override
     public double calculateHydraulicResistance() {
-        double localResistanceCoefficient = AreaChangeCoefficients.calculateUniformSuddenAreaChangeKsiM(re,
-                smallArea / largeArea);
+        double m = 0;
+        double N = Math.pow(2 * m + 1, 2) * (m + 1) / (4 * Math.pow(m, 2) * (m + 2));
+        double M = Math.pow(2 * m + 1, 3) * Math.pow((m + 1), 3) / (4 * Math.pow(m, 4) * (2 * m + 3) * (m + 3));
+        double localResistanceCoefficient = 1 / (Math.pow(smallArea / largeArea, 2)) + N + 2*M/(smallArea / largeArea);
         double lambda;
         if (absolutRoughness == 0) {
             lambda = TubeCoefficients.calculateSmoothPipeLambda(re);
