@@ -94,4 +94,63 @@ public abstract class AreaChangeCoefficients {
                     q11, q12, q21, q22);
         }
     }
+    public static double calculatePowerLowSuddenAreaChangeKsiM(double areaRatio, double m) {
+        //Граничные значения для Re
+        double areaRatioMin = F0_F2_RATIO_POWER[0];
+        double areaRatioMax = F0_F2_RATIO_POWER[F0_F2_RATIO_POWER.length - 1];
+
+        // Определяем индексы для m с учетом границ
+        int[] mIndices;
+        if (m < M_VALUES[0]) {
+            // За левой границей массива m
+            mIndices = new int[]{0, 0};
+        } else if (m > M_VALUES[M_VALUES.length - 1]) {
+            // За правой границей массива m
+            mIndices = new int[]{M_VALUES.length - 1, M_VALUES.length - 1};
+        } else {
+            // В пределах массива m
+            mIndices = Functions.lineSearchNeighborIndices(m, M_VALUES);
+        }
+
+        // Определяем индексы для отношения площадей с учетом границ
+        int[] areaRatioIndices;
+        if (areaRatio < areaRatioMin) {
+            // За левой границей массива отношения площадей
+            areaRatioIndices = new int[]{0, 0};
+        } else if (areaRatio > areaRatioMax) {
+            // За правой границей массива отношения площадей
+            areaRatioIndices = new int[]{F0_F2_RATIO_POWER.length - 1, F0_F2_RATIO_POWER.length - 1};
+        } else {
+            // В пределах массива отношения площадей
+            areaRatioIndices = Functions.binarySearchNearestIndices(areaRatio, F0_F2_RATIO_POWER);
+        }
+
+        // Значения отношения площадей и Re для интерполяции
+        double m1 = M_VALUES[mIndices[0]];
+        double m2 = M_VALUES[mIndices[1]];
+        double areaRatio1 = F0_F2_RATIO_POWER[areaRatioIndices[0]];
+        double areaRatio2 = F0_F2_RATIO_POWER[areaRatioIndices[1]];
+
+        // Значения ξм из таблицы
+        double q11 = KSI_M_VALUES_POWER[mIndices[0]][areaRatioIndices[0]];
+        double q12 = KSI_M_VALUES_POWER[mIndices[0]][areaRatioIndices[1]];
+        double q21 = KSI_M_VALUES_POWER[mIndices[1]][areaRatioIndices[0]];
+        double q22 = KSI_M_VALUES_POWER[mIndices[1]][areaRatioIndices[1]];
+
+        if (mIndices[0] == mIndices[1] && areaRatioIndices[0] == areaRatioIndices[1]) {
+            // Оба параметра за границами или на границах - возвращаем угловое значение
+            return KSI_M_VALUES_POWER[mIndices[0]][areaRatioIndices[0]];
+        } else if (mIndices[0] == mIndices[1]) {
+            // Отношение площадей за границами, интерполируем только по Re
+            return Functions.interpolateLinear(areaRatio1, areaRatio2, q11, q12, areaRatio);
+        } else if (areaRatioIndices[0] == areaRatioIndices[1]) {
+            // Re за границами, интерполируем только по отношению площадей
+            return Functions.interpolateLinear(m1, m2, q11, q21, m);
+        } else {
+            // Оба параметра в пределах массивов - билинейная интерполяция
+            return Functions.bilinearInterpolation(m, areaRatio,
+                    m1, m2, areaRatio1, areaRatio2,
+                    q11, q12, q21, q22);
+        }
+    }
 }
