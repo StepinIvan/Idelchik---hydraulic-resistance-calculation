@@ -1,6 +1,7 @@
 package model.elements.areaChanges;
 
 import model.elements.utils.AreaChangeCoefficients;
+import model.elements.utils.Functions;
 import model.elements.utils.TubeCoefficients;
 
 public class PowerLowSuddenAreaChange extends AreaChange {
@@ -8,24 +9,24 @@ public class PowerLowSuddenAreaChange extends AreaChange {
     private final double largeArea;
     private final double absolutRoughness;
     private final double re;
+    private final double m;
 
     public PowerLowSuddenAreaChange(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
-                                    double re) {
+                                    double re, double m) {
         super("Расширение потока с равномерным распределением скоростей", smallerDiameter,
                 largerDiameter, length);
         this.absolutRoughness = absolutRoughness;
         this.re = re;
         this.smallArea = Math.PI * Math.pow(smallerDiameter, 2.) / 4.;
         this.largeArea = Math.PI * Math.pow(largerDiameter, 2.) / 4.;
+        this.m = m;//TODO restriction for m. m must be greater or equal 1
         validateParameters();
     }
 
     @Override
     public double calculateHydraulicResistance() {
-        double m = 0;
-        double N = Math.pow(2 * m + 1, 2) * (m + 1) / (4 * Math.pow(m, 2) * (m + 2));
-        double M = Math.pow(2 * m + 1, 3) * Math.pow((m + 1), 3) / (4 * Math.pow(m, 4) * (2 * m + 3) * (m + 3));
-        double localResistanceCoefficient = 1 / (Math.pow(smallArea / largeArea, 2)) + N + 2*M/(smallArea / largeArea);
+        double localResistanceCoefficient = AreaChangeCoefficients.calculatePowerLowSuddenAreaChangeKsiM(
+                smallArea / largeArea, m);
         double lambda;
         if (absolutRoughness == 0) {
             lambda = TubeCoefficients.calculateSmoothPipeLambda(re);
