@@ -3,15 +3,15 @@ package model.elements.areaChanges;
 import model.elements.utils.AreaChangeCoefficients;
 import model.elements.utils.TubeCoefficients;
 
-public class ParabolicSuddenAreaChange extends AreaChange {
+public class UniformSuddenExpansion extends AreaChange {
     private final double smallArea;
     private final double largeArea;
     private final double absolutRoughness;
     private final double re;
 
-    public ParabolicSuddenAreaChange(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
-                                     double re) {
-        super("Расширение потока с параболическим распределением скоростей", smallerDiameter,
+    public UniformSuddenExpansion(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
+                                  double re) {
+        super("Расширение потока с равномерным распределением скоростей", smallerDiameter,
                 largerDiameter, length);
         this.absolutRoughness = absolutRoughness;
         this.re = re;
@@ -22,7 +22,7 @@ public class ParabolicSuddenAreaChange extends AreaChange {
 
     @Override
     public double calculateHydraulicResistance() {
-        double localResistanceCoefficient = AreaChangeCoefficients.calculateParabolicSuddenAreaChangeKsiM(
+        double localResistanceCoefficient = AreaChangeCoefficients.calculateUniformSuddenExpansionKsiM(re,
                 smallArea / largeArea);
         double lambda;
         if (absolutRoughness == 0) {

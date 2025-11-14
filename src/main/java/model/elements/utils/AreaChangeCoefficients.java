@@ -35,7 +35,7 @@ public abstract class AreaChangeCoefficients {
             {1.00, 0.82, 0.64, 0.48, 0.36, 0.25, 0.16, 0.09, 0.04, 0.00}  // m = ∞ (Double.MAX_VALUE)
     };
 
-    public static double calculateUniformSuddenAreaChangeKsiM(double re, double areaRatio) {
+    public static double calculateUniformSuddenExpansionKsiM(double re, double areaRatio) {
         if (re <= 9.9) {
             return linePredictionSmallKsiM.interpolate(re);
         } else if (re > 9.9 && re < 10) {
@@ -100,7 +100,7 @@ public abstract class AreaChangeCoefficients {
         }
     }
 
-    public static double calculatePowerLowSuddenAreaChangeKsiM(double areaRatio, double m) {
+    public static double calculatePowerLowSuddenExpansionKsiM(double areaRatio, double m) {
         //Граничные значения для Re
         double areaRatioMin = F0_F2_RATIO_POWER[0];
         double areaRatioMax = F0_F2_RATIO_POWER[F0_F2_RATIO_POWER.length - 1];
@@ -159,7 +159,7 @@ public abstract class AreaChangeCoefficients {
                     q11, q12, q21, q22);
         }
     }
-    public static double calculateParabolicSuddenAreaChangeKsiM(double areaRatio) {
+    public static double calculateParabolicSuddenExpansionKsiM(double areaRatio) {
         return linePredictionKsiMParabolic.interpolate(areaRatio);
     }
 }

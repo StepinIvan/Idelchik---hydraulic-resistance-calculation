@@ -1,18 +1,17 @@
 package model.elements.areaChanges;
 
 import model.elements.utils.AreaChangeCoefficients;
-import model.elements.utils.Functions;
 import model.elements.utils.TubeCoefficients;
 
-public class PowerLowSuddenAreaChange extends AreaChange {
+public class PowerLowSuddenExpansion extends AreaChange {
     private final double smallArea;
     private final double largeArea;
     private final double absolutRoughness;
     private final double re;
     private final double m;
 
-    public PowerLowSuddenAreaChange(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
-                                    double re, double m) {
+    public PowerLowSuddenExpansion(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
+                                   double re, double m) {
         super("Расширение потока с распределением скоростей по степенному закону", smallerDiameter,
                 largerDiameter, length);
         this.absolutRoughness = absolutRoughness;
@@ -25,7 +24,7 @@ public class PowerLowSuddenAreaChange extends AreaChange {
 
     @Override
     public double calculateHydraulicResistance() {
-        double localResistanceCoefficient = AreaChangeCoefficients.calculatePowerLowSuddenAreaChangeKsiM(
+        double localResistanceCoefficient = AreaChangeCoefficients.calculatePowerLowSuddenExpansionKsiM(
                 smallArea / largeArea, m);
         double lambda;
         if (absolutRoughness == 0) {
