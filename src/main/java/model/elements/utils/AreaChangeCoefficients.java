@@ -8,10 +8,14 @@ public abstract class AreaChangeCoefficients {
             30.0 / 6, 30.0 / 7, 30.0 / 8, 30.0 / 9, 30.0 / 9.9};
     private static final double[] F0_F2_RATIO_PARABOLIC = {0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.};
     private static final double[] KSI_M_PARABOLIC = {2.00, 1.75, 1.51, 1.30, 1.10, 0.92, 0.78, 0.63, 0.51, 0.34};
+    private static final double[] F0_F1_SHARP = {0, 0.2, 0.4, 0.6, 0.8, 0.9, 1.0};
+    private static final double[] A_SHARP = {1.0, 0.850, 0.680, 0.503, 0.300, 0.178, 0};
     private static final LinearInterpolator linePredictionSmallKsiM =
             new LinearInterpolator(SMALL_RE_VALUES, SMALL_KSI_M_VALUES);
     private static final LinearInterpolator linePredictionKsiMParabolic =
             new LinearInterpolator(F0_F2_RATIO_PARABOLIC, KSI_M_PARABOLIC);
+    private static final LinearInterpolator linePredictionASharpContraction =
+            new LinearInterpolator(F0_F1_SHARP, A_SHARP);
 
     private static final double[][] KSI_M_VALUES = {
             {3.10, 3.20, 3.00, 2.40, 2.15, 1.95, 1.70, 1.65, 1.70, 2.00, 1.60, 1.00, 0.81},
@@ -161,5 +165,8 @@ public abstract class AreaChangeCoefficients {
     }
     public static double calculateParabolicSuddenExpansionKsiM(double areaRatio) {
         return linePredictionKsiMParabolic.interpolate(areaRatio);
+    }
+    public static double calculateSharpSuddenContractionKsi(double areaRatio) {
+        return 0.5 * linePredictionASharpContraction.interpolate(areaRatio);
     }
 }

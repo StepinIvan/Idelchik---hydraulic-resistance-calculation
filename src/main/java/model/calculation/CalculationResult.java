@@ -2,6 +2,7 @@ package model.calculation;
 
 import model.elements.areaChanges.ParabolicSuddenExpansion;
 import model.elements.areaChanges.PowerLowSuddenExpansion;
+import model.elements.areaChanges.SharpSuddenContraction;
 import model.elements.areaChanges.UniformSuddenExpansion;
 import model.elements.utils.BendCoefficients;
 import model.elements.utils.TubeCoefficients;
@@ -17,5 +18,7 @@ public class CalculationResult {
         areaChange1.calculateHydraulicResistance();
         ParabolicSuddenExpansion areaChange2 = new ParabolicSuddenExpansion(1,1.4142135624,15e-6, 1., 50000);
         areaChange2.calculateHydraulicResistance();
+        SharpSuddenContraction areaChange3 = new SharpSuddenContraction(1,1.4142135624,15e-6, 1., 50000);
+        areaChange3.calculateHydraulicResistance();
     }
 }
