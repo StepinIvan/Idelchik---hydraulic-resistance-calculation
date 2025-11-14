@@ -3,15 +3,15 @@ package model.elements.areaChanges;
 import model.elements.utils.AreaChangeCoefficients;
 import model.elements.utils.TubeCoefficients;
 
-public class SharpSuddenContraction extends AreaChange {
+public class EasedSuddenContraction extends AreaChange {
     private final double smallArea;
     private final double largeArea;
     private final double absolutRoughness;
     private final double re;
 
-    public SharpSuddenContraction(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
+    public EasedSuddenContraction(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
                                   double re) {
-        super("Сужение потока с острой кромкой", smallerDiameter,
+        super("Сужение потока с закругленной кромкой", smallerDiameter,
                 largerDiameter, length);
         this.absolutRoughness = absolutRoughness;
         this.re = re;
@@ -31,8 +31,8 @@ public class SharpSuddenContraction extends AreaChange {
             lambda = TubeCoefficients.calculateEvenGrainedPipeLambda(re, absolutRoughness / largerDiameter);
             //TODO Add calculation of friction factor for not even grained roughness;
         }
-        double frictionResistanceCoefficient = lambda * length / smallerDiameter;
-        return localResistanceCoefficient + frictionResistanceCoefficient;
+        double frictionResistanceCoefficient = lambda * length / largerDiameter;
+        return localResistanceCoefficient + frictionResistanceCoefficient / Math.pow((largeArea / smallArea), 2.);
     }
 
     @Override
