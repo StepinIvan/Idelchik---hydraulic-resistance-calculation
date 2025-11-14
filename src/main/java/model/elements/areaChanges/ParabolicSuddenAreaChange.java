@@ -1,32 +1,29 @@
 package model.elements.areaChanges;
 
 import model.elements.utils.AreaChangeCoefficients;
-import model.elements.utils.Functions;
 import model.elements.utils.TubeCoefficients;
 
-public class PowerLowSuddenAreaChange extends AreaChange {
+public class ParabolicSuddenAreaChange extends AreaChange {
     private final double smallArea;
     private final double largeArea;
     private final double absolutRoughness;
     private final double re;
-    private final double m;
 
-    public PowerLowSuddenAreaChange(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
-                                    double re, double m) {
-        super("Расширение потока с распределением скоростей по степенному закону", smallerDiameter,
+    public ParabolicSuddenAreaChange(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
+                                     double re) {
+        super("Расширение потока с параболическим распределением скоростей", smallerDiameter,
                 largerDiameter, length);
         this.absolutRoughness = absolutRoughness;
         this.re = re;
         this.smallArea = Math.PI * Math.pow(smallerDiameter, 2.) / 4.;
         this.largeArea = Math.PI * Math.pow(largerDiameter, 2.) / 4.;
-        this.m = m;//TODO restriction for m. m must be greater or equal 1
         validateParameters();
     }
 
     @Override
     public double calculateHydraulicResistance() {
-        double localResistanceCoefficient = AreaChangeCoefficients.calculatePowerLowSuddenAreaChangeKsiM(
-                smallArea / largeArea, m);
+        double localResistanceCoefficient = AreaChangeCoefficients.calculateParabolicSuddenAreaChangeKsiM(
+                smallArea / largeArea);
         double lambda;
         if (absolutRoughness == 0) {
             lambda = TubeCoefficients.calculateSmoothPipeLambda(re);

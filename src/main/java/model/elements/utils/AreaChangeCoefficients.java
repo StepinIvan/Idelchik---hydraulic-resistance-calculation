@@ -1,13 +1,17 @@
 package model.elements.utils;
 
 public abstract class AreaChangeCoefficients {
-    private static final double[] F0_F2_RATIO = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
+    private static final double[] F0_F2_RATIO_UNIFORM = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
     private static final double[] RE_VALUES = {10, 15, 20, 30, 40, 50, 100, 200, 500, 1000, 2000, 3000, 3300};
     private static final double[] SMALL_RE_VALUES = {0.0001, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9.9};
     private static final double[] SMALL_KSI_M_VALUES = {30.0 / 0.0001, 30.0, 30.0 / 2, 30.0 / 3, 30.0 / 4, 30.0 / 5,
             30.0 / 6, 30.0 / 7, 30.0 / 8, 30.0 / 9, 30.0 / 9.9};
+    private static final double[] F0_F2_RATIO_PARABOLIC = {0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.};
+    private static final double[] KSI_M_PARABOLIC = {2.00, 1.75, 1.51, 1.30, 1.10, 0.92, 0.78, 0.63, 0.51, 0.34};
     private static final LinearInterpolator linePredictionSmallKsiM =
             new LinearInterpolator(SMALL_RE_VALUES, SMALL_KSI_M_VALUES);
+    private static final LinearInterpolator linePredictionKsiMParabolic =
+            new LinearInterpolator(F0_F2_RATIO_PARABOLIC, KSI_M_PARABOLIC);
 
     private static final double[][] KSI_M_VALUES = {
             {3.10, 3.20, 3.00, 2.40, 2.15, 1.95, 1.70, 1.65, 1.70, 2.00, 1.60, 1.00, 0.81},
@@ -30,6 +34,7 @@ public abstract class AreaChangeCoefficients {
             {1.06, 0.86, 0.69, 0.53, 0.41, 0.29, 0.19, 0.12, 0.06, 0.02}, // m = 7.0
             {1.00, 0.82, 0.64, 0.48, 0.36, 0.25, 0.16, 0.09, 0.04, 0.00}  // m = ∞ (Double.MAX_VALUE)
     };
+
     public static double calculateUniformSuddenAreaChangeKsiM(double re, double areaRatio) {
         if (re <= 9.9) {
             return linePredictionSmallKsiM.interpolate(re);
@@ -42,15 +47,15 @@ public abstract class AreaChangeCoefficients {
 
         // Определяем индексы для отношения площадей с учетом границ
         int[] areaRatioIndices;
-        if (areaRatio < F0_F2_RATIO[0]) {
+        if (areaRatio < F0_F2_RATIO_UNIFORM[0]) {
             // За левой границей массива отношения площадей
             areaRatioIndices = new int[]{0, 0};
-        } else if (areaRatio > F0_F2_RATIO[F0_F2_RATIO.length - 1]) {
+        } else if (areaRatio > F0_F2_RATIO_UNIFORM[F0_F2_RATIO_UNIFORM.length - 1]) {
             // За правой границей массива отношения площадей
-            areaRatioIndices = new int[]{F0_F2_RATIO.length - 1, F0_F2_RATIO.length - 1};
+            areaRatioIndices = new int[]{F0_F2_RATIO_UNIFORM.length - 1, F0_F2_RATIO_UNIFORM.length - 1};
         } else {
             // В пределах массива отношения площадей
-            areaRatioIndices = Functions.lineSearchNeighborIndices(areaRatio, F0_F2_RATIO);
+            areaRatioIndices = Functions.lineSearchNeighborIndices(areaRatio, F0_F2_RATIO_UNIFORM);
         }
 
         // Определяем индексы для Re с учетом границ
@@ -67,8 +72,8 @@ public abstract class AreaChangeCoefficients {
         }
 
         // Значения отношения площадей и Re для интерполяции
-        double areaRatio1 = F0_F2_RATIO[areaRatioIndices[0]];
-        double areaRatio2 = F0_F2_RATIO[areaRatioIndices[1]];
+        double areaRatio1 = F0_F2_RATIO_UNIFORM[areaRatioIndices[0]];
+        double areaRatio2 = F0_F2_RATIO_UNIFORM[areaRatioIndices[1]];
         double re1 = RE_VALUES[reIndices[0]];
         double re2 = RE_VALUES[reIndices[1]];
 
@@ -94,6 +99,7 @@ public abstract class AreaChangeCoefficients {
                     q11, q12, q21, q22);
         }
     }
+
     public static double calculatePowerLowSuddenAreaChangeKsiM(double areaRatio, double m) {
         //Граничные значения для Re
         double areaRatioMin = F0_F2_RATIO_POWER[0];
@@ -152,5 +158,8 @@ public abstract class AreaChangeCoefficients {
                     m1, m2, areaRatio1, areaRatio2,
                     q11, q12, q21, q22);
         }
+    }
+    public static double calculateParabolicSuddenAreaChangeKsiM(double areaRatio) {
+        return linePredictionKsiMParabolic.interpolate(areaRatio);
     }
 }
