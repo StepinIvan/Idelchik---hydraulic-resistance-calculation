@@ -3,29 +3,31 @@ package model.elements.areaChanges;
 import model.elements.utils.AreaChangeCoefficients;
 import model.elements.utils.TubeCoefficients;
 
-public class EasedSuddenContraction extends AreaChange {
+public class BevelSuddenContraction extends AreaChange {
     private final double smallArea;
     private final double largeArea;
     private final double absolutRoughness;
     private final double re;
-    private final double rDRatio;
+    private final double angle;
+    private final double bevelLength;
 
-    public EasedSuddenContraction(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
-                                  double re, double rDRatio) {
+    public BevelSuddenContraction(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
+                                  double re, double angle, double bevelLength) {
         super("Сужение потока с закругленной кромкой", smallerDiameter,
                 largerDiameter, length);
         this.absolutRoughness = absolutRoughness;
         this.re = re;
         this.smallArea = Math.PI * Math.pow(smallerDiameter, 2.) / 4.;
         this.largeArea = Math.PI * Math.pow(largerDiameter, 2.) / 4.;
-        this.rDRatio = rDRatio;
+        this.angle = angle;
+        this.bevelLength = bevelLength;
         validateParameters();
     }
 
     @Override
     public double calculateHydraulicResistance() {
-        double localResistanceCoefficient = AreaChangeCoefficients.calculateEasedSuddenContractionKsi(
-                smallArea / largeArea, rDRatio);
+        double localResistanceCoefficient = AreaChangeCoefficients.calculateBeSuddenContractionKsi(
+                smallArea / largeArea, angle, bevelLength / smallerDiameter);
         double lambda;
         if (absolutRoughness == 0) {
             lambda = TubeCoefficients.calculateSmoothPipeLambda(re);
@@ -34,7 +36,7 @@ public class EasedSuddenContraction extends AreaChange {
             //TODO Add calculation of friction factor for not even grained roughness;
         }
         double frictionResistanceCoefficient = lambda * length / largerDiameter;
-        return localResistanceCoefficient + frictionResistanceCoefficient;
+        return localResistanceCoefficient + frictionResistanceCoefficient / Math.pow((largeArea / smallArea), 2.);
     }
 
     @Override
