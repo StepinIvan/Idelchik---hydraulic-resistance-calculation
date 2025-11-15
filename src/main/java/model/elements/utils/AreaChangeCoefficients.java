@@ -248,4 +248,8 @@ public abstract class AreaChangeCoefficients {
                     q11, q12, q21, q22);
         }
     }
+    public static double calculateBevelSuddenContractionKsi(double areaRatio, double alpha, double lDRatio) {
+        return calculateConicalBellKsi(alpha, lDRatio) *
+                linePredictionASharpContraction.interpolate(areaRatio);
+    }
 }

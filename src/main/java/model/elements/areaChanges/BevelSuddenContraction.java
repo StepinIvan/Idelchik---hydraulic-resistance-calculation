@@ -13,7 +13,7 @@ public class BevelSuddenContraction extends AreaChange {
 
     public BevelSuddenContraction(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
                                   double re, double angle, double bevelLength) {
-        super("Сужение потока с закругленной кромкой", smallerDiameter,
+        super("Сужение потока с срезанной под углом кромкой", smallerDiameter,
                 largerDiameter, length);
         this.absolutRoughness = absolutRoughness;
         this.re = re;
@@ -26,7 +26,7 @@ public class BevelSuddenContraction extends AreaChange {
 
     @Override
     public double calculateHydraulicResistance() {
-        double localResistanceCoefficient = AreaChangeCoefficients.calculateBeSuddenContractionKsi(
+        double localResistanceCoefficient = AreaChangeCoefficients.calculateBevelSuddenContractionKsi(
                 smallArea / largeArea, angle, bevelLength / smallerDiameter);
         double lambda;
         if (absolutRoughness == 0) {
@@ -36,7 +36,7 @@ public class BevelSuddenContraction extends AreaChange {
             //TODO Add calculation of friction factor for not even grained roughness;
         }
         double frictionResistanceCoefficient = lambda * length / largerDiameter;
-        return localResistanceCoefficient + frictionResistanceCoefficient / Math.pow((largeArea / smallArea), 2.);
+        return localResistanceCoefficient + frictionResistanceCoefficient;
     }
 
     @Override
