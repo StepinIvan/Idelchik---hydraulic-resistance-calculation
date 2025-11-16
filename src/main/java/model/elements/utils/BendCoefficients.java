@@ -1,7 +1,7 @@
 package model.elements.utils;
 
 public abstract class BendCoefficients {
-    private static double TRANSITION_REGION = 1000.;
+    private static final double TRANSITION_REGION = 1000.;
     private static final double[] BEND_ANGLE_FOR_A1 = {0., 20., 30., 45., 60., 75., 90., 110., 130., 150., 180.};
     private static final double[] A1 = {0., 0.31, 0.45, 0.6, 0.78, 0.9, 1., 1.13, 1.20, 1.28, 1.40};
     private static final double[] R0_D0_RATIO = {0.50, 0.60, 0.70, 0.80, 0.90, 1.00, 1.25, 1.50, 2.0, 4.0, 6.0, 8.0,
@@ -28,7 +28,17 @@ public abstract class BendCoefficients {
             {1.67, 1.58, 1.49, 1.40, 1.34, 1.26, 1.21, 1.19, 1.17, 1.14, 1.06, 1.0},
             {2.00, 1.89, 1.77, 1.64, 1.56, 1.46, 1.38, 1.30, 1.15, 1.02, 1.0, 1.0}
     };
-
+    private static final double[] ANGLES_COUPLED_BENDS = {15, 30, 45, 60, 75, 90, 120};
+    private static final double[] L_D_RATIO_COUPLED_BENDS = {0, 1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 25, 40};
+    private static final double[][] A_COUPLED_BENDS = {
+            {0.20, 0.42, 0.60, 0.78, 0.94, 1.16, 1.20, 1.15, 1.08, 1.05, 1.02, 1.0, 1.10, 1.25, 2.0},
+            {0.40, 0.65, 0.88, 1.16, 1.20, 1.18, 1.12, 1.06, 1.06, 1.15, 1.28, 1.40, 1.50, 1.70, 2.0},
+            {0.60, 1.06, 1.20, 1.23, 1.20, 1.08, 1.03, 1.08, 1.17, 1.30, 1.42, 1.55, 1.65, 1.80, 2.0},
+            {1.05, 1.38, 1.37, 1.28, 1.15, 1.06, 1.16, 1.30, 1.42, 1.54, 1.66, 1.76, 1.85, 1.95, 2.0},
+            {1.50, 1.58, 1.46, 1.30, 1.27, 1.30, 1.37, 1.47, 1.57, 1.68, 1.75, 1.80, 1.88, 1.97, 2.0},
+            {1.70, 1.67, 1.40, 1.37, 1.38, 1.47, 1.55, 1.63, 1.70, 1.76, 1.82, 1.88, 1.92, 1.98, 2.0},
+            {1.78, 1.64, 1.48, 1.55, 1.62, 1.70, 1.75, 1.82, 1.88, 1.90, 1.92, 1.95, 1.97, 1.99, 2.0}
+    };
     public static double calculateKRe(double r0d0, double re) {
         double reNormalized = re * 1e-5;
 
@@ -133,5 +143,48 @@ public abstract class BendCoefficients {
 
     public static double calculateC1(double a0b0Ratio) {
         return linePredictionC1.interpolate(a0b0Ratio);
+    }
+    public static double calculateACoupledBends(double bendsAngle, double lDRatio) {
+        double lDRatioMin = L_D_RATIO_COUPLED_BENDS[0];
+        double lDRatioMax = L_D_RATIO_COUPLED_BENDS[L_D_RATIO_COUPLED_BENDS.length - 1];
+        int[] bendAngleIndices;
+        if (bendsAngle < ANGLES_COUPLED_BENDS[0]) {
+            bendAngleIndices = new int[]{0, 0};
+        } else if (bendsAngle > ANGLES_COUPLED_BENDS[ANGLES_COUPLED_BENDS.length - 1]) {
+            bendAngleIndices = new int[]{ANGLES_COUPLED_BENDS.length - 1, ANGLES_COUPLED_BENDS.length - 1};
+        } else {
+            bendAngleIndices = Functions.lineSearchNeighborIndices(bendsAngle, ANGLES_COUPLED_BENDS);
+        }
+
+        int[] lDRatioIndices;
+        if (lDRatio < lDRatioMin) {
+            lDRatioIndices = new int[]{0, 0};
+        } else if (lDRatio > lDRatioMax) {
+            lDRatioIndices = new int[]{L_D_RATIO_COUPLED_BENDS.length - 1, L_D_RATIO_COUPLED_BENDS.length - 1};
+        } else {
+            lDRatioIndices = Functions.binarySearchNearestIndices(lDRatio, L_D_RATIO_COUPLED_BENDS);
+        }
+
+        double bendAngle1 = ANGLES_COUPLED_BENDS[bendAngleIndices[0]];
+        double bendAngle2 = ANGLES_COUPLED_BENDS[bendAngleIndices[1]];
+        double lDRatio1 = L_D_RATIO_COUPLED_BENDS[lDRatioIndices[0]];
+        double lDRatio2 = L_D_RATIO_COUPLED_BENDS[lDRatioIndices[1]];
+
+        double q11 = A_COUPLED_BENDS[bendAngleIndices[0]][lDRatioIndices[0]];
+        double q12 = A_COUPLED_BENDS[bendAngleIndices[0]][lDRatioIndices[1]];
+        double q21 = A_COUPLED_BENDS[bendAngleIndices[1]][lDRatioIndices[0]];
+        double q22 = A_COUPLED_BENDS[bendAngleIndices[1]][lDRatioIndices[1]];
+
+        if (bendAngleIndices[0] == bendAngleIndices[1] && lDRatioIndices[0] == lDRatioIndices[1]) {
+            return A_COUPLED_BENDS[bendAngleIndices[0]][lDRatioIndices[0]];
+        } else if (bendAngleIndices[0] == bendAngleIndices[1]) {
+            return Functions.interpolateLinear(lDRatio1, lDRatio2, q11, q12, lDRatio);
+        } else if (lDRatioIndices[0] == lDRatioIndices[1]) {
+            return Functions.interpolateLinear(bendAngle1, bendAngle2, q11, q21, bendsAngle);
+        } else {
+            return Functions.bilinearInterpolation(bendsAngle, lDRatio,
+                    bendAngle1, bendAngle2, lDRatio1, lDRatio2,
+                    q11, q12, q21, q22);
+        }
     }
 }

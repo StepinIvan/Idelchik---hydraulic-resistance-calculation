@@ -38,7 +38,20 @@ public class CircularBend extends Bend {
         frictionResistanceCoefficient = 0.0175 * bendAngle * lambda * bendCurvatureRadius / diameter;
         return localResistanceCoefficient + frictionResistanceCoefficient;
     }
-
+    public double calculateLocalHydraulicResistance() {
+        double A1 = BendCoefficients.calculateA1(bendAngle);
+        double B1 = BendCoefficients.calculateB1(bendCurvatureRadius / diameter);
+        double localResistanceCoefficient;
+        if (absolutRoughness == 0) {
+            localResistanceCoefficient = A1 * B1; //C1 = 1 for circular bend
+        } else {
+            double kDelta = BendCoefficients.calculateKDelta(bendCurvatureRadius / diameter, re,
+                    absolutRoughness);
+            double kRe = BendCoefficients.calculateKRe(bendCurvatureRadius / diameter, re);
+            localResistanceCoefficient = kDelta * kRe * A1 * B1;
+        }
+        return localResistanceCoefficient;
+    }
     @Override
     public String getElementType() {
         return BendType.CIRCULAR.toString();
