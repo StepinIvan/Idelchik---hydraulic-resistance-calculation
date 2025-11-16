@@ -7,21 +7,24 @@ public class CoupledCircularBends extends Bend {
     private final double absolutRoughness;
     private final double re;
     private final double diameter;
+    private final double lDRatio;
 
     public CoupledCircularBends(double diameter, double bendAngle, double bendCurvatureRadius, double absolutRoughness,
-                                double re) {
+                                double re, double lDRatio) {
         super("Сопряженные отводы (круглые)", bendAngle, bendCurvatureRadius);
         this.absolutRoughness = absolutRoughness;
         this.re = re;
         this.diameter = diameter;
+        this.lDRatio = lDRatio;
         validateParameters();
     }
 
     @Override
     public double calculateHydraulicResistance() {
-        double A =
-        double localResistanceCoefficient;
-        double frictionResistanceCoefficient;
+        CircularBend circularBend = new CircularBend(diameter,bendAngle,bendCurvatureRadius,absolutRoughness, re);
+        double A = BendCoefficients.calculateACoupledBends(bendAngle, lDRatio);
+        double localResistanceCoefficient = A * circularBend.calculateLocalHydraulicResistance();
+        double frictionResistanceCoefficient = 0;
         return localResistanceCoefficient + frictionResistanceCoefficient;
     }
 
