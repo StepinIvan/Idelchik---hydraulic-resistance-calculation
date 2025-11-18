@@ -24,7 +24,6 @@ public class BevelSuddenContraction extends AreaChange {
         validateParameters();
     }
 
-    @Override
     public double calculateHydraulicResistance() {
         double localResistanceCoefficient = AreaChangeCoefficients.calculateBevelSuddenContractionKsi(
                 smallArea / largeArea, angle, bevelLength / smallerDiameter);

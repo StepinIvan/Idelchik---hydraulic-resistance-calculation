@@ -20,7 +20,6 @@ public class ParabolicSuddenExpansion extends AreaChange {
         validateParameters();
     }
 
-    @Override
     public double calculateHydraulicResistance() {
         double localResistanceCoefficient = AreaChangeCoefficients.calculateParabolicSuddenExpansionKsiM(
                 smallArea / largeArea);

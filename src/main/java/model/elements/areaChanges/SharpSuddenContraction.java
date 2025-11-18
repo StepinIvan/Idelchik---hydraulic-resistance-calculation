@@ -20,7 +20,6 @@ public class SharpSuddenContraction extends AreaChange {
         validateParameters();
     }
 
-    @Override
     public double calculateHydraulicResistance() {
         double localResistanceCoefficient = AreaChangeCoefficients.calculateSharpSuddenContractionKsi(
                 smallArea / largeArea);

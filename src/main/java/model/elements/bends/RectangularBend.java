@@ -19,7 +19,6 @@ public class RectangularBend extends Bend {
         validateParameters();
     }
 
-    @Override
     public double calculateHydraulicResistance() {
         double A1 = BendCoefficients.calculateA1(bendAngle);
         double B1 = BendCoefficients.calculateB1(bendCurvatureRadius / b0);

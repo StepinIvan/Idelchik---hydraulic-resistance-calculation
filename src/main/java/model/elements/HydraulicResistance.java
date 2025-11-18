@@ -1,7 +1,7 @@
 package model.elements;
 
 public interface HydraulicResistance {
-    double calculateHydraulicResistance();
+    //double calculateHydraulicResistance();
 
     String getElementType();
 }

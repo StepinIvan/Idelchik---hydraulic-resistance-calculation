@@ -19,7 +19,6 @@ public class CoupledCircularBends extends Bend {
         validateParameters();
     }
 
-    @Override
     public double calculateHydraulicResistance() {
         CircularBend circularBend = new CircularBend(diameter,bendAngle,bendCurvatureRadius,absolutRoughness, re);
         double A = BendCoefficients.calculateACoupledBends(bendAngle, lDRatio);

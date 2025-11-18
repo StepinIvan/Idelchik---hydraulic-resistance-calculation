@@ -22,7 +22,6 @@ public class PowerLowSuddenExpansion extends AreaChange {
         validateParameters();
     }
 
-    @Override
     public double calculateHydraulicResistance() {
         double localResistanceCoefficient = AreaChangeCoefficients.calculatePowerLowSuddenExpansionKsiM(
                 smallArea / largeArea, m);

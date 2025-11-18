@@ -22,7 +22,6 @@ public class EasedSuddenContraction extends AreaChange {
         validateParameters();
     }
 
-    @Override
     public double calculateHydraulicResistance() {
         double localResistanceCoefficient = AreaChangeCoefficients.calculateEasedSuddenContractionKsi(
                 smallArea / largeArea, rDRatio);

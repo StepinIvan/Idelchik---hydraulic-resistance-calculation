@@ -13,34 +13,30 @@ public class UniformSuddenExpansion extends AreaChange {
     private final double largeArea;
     private final double absolutRoughness;
     @Getter
-    private final double re;
-    @Getter
     private double localResistanceCoefficient;
     @Getter
     private double frictionResistanceCoefficient;
     @Getter
     private double lambda;
 
-    public UniformSuddenExpansion(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
-                                  double re) {
+    public UniformSuddenExpansion(double smallerDiameter, double largerDiameter, double absolutRoughness,
+                                  double length) {
         super("Расширение (внезапное) потока с равномерным распределением скоростей", smallerDiameter,
                 largerDiameter, length);
         this.absolutRoughness = absolutRoughness;
-        this.re = re;
         this.smallArea = Math.PI * Math.pow(smallerDiameter, 2.) / 4.;
         this.largeArea = Math.PI * Math.pow(largerDiameter, 2.) / 4.;
         validateParameters();
     }
 
-    @Override
-    public double calculateHydraulicResistance() {
-        localResistanceCoefficient = calculateLocalResistanceCoefficient(re, smallArea / largeArea);
-        frictionResistanceCoefficient = calculateFrictionResistanceCoefficient(re,
-                absolutRoughness / largerDiameter, length, largerDiameter);
+    public double calculateHydraulicResistance(double re) {
+        localResistanceCoefficient = calculateLocalResistanceCoefficient(re);
+        frictionResistanceCoefficient = calculateFrictionResistanceCoefficient(re);
         return localResistanceCoefficient + frictionResistanceCoefficient / Math.pow((largeArea / smallArea), 2.);
     }
 
-    public double calculateLocalResistanceCoefficient(double re, double areaRatio) {
+    public double calculateLocalResistanceCoefficient(double re) {
+        double areaRatio = smallArea / largeArea;
         double[] reValues = AreaChangeCoefficients.getReValues();
         double[] f0f2Ratio = AreaChangeCoefficients.getF0_F2_RATIO_UNIFORM();
         double[][] ksiMValues = AreaChangeCoefficients.getKSI_M_VALUES();
@@ -109,15 +105,15 @@ public class UniformSuddenExpansion extends AreaChange {
         }
     }
 
-    public double calculateFrictionResistanceCoefficient(double re, double relativeRoughness, double length,
-                                                         double D2h) {
+    public double calculateFrictionResistanceCoefficient(double re) {
+        double relativeRoughness = absolutRoughness / largerDiameter;
         if (absolutRoughness == 0) {
             lambda = TubeCoefficients.calculateSmoothPipeLambda(re);
         } else {
             lambda = TubeCoefficients.calculateEvenGrainedPipeLambda(re, relativeRoughness);
             //TODO Add calculation of friction factor for not even grained roughness;
         }
-        return lambda * length / D2h;
+        return lambda * length / largerDiameter;
     }
 
     @Override
