@@ -122,6 +122,6 @@ public class UniformSuddenExpansion extends AreaChange {
     }
 
     @Override
-    public void validateParameters() {
+    public void validateParameters() {//TODO checks
     }
 }
