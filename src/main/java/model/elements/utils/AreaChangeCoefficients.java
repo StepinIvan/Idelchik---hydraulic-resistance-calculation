@@ -7,8 +7,10 @@ public abstract class AreaChangeCoefficients {
     private static final double[] F0_F2_RATIO_UNIFORM = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6};
     @Getter
     private static final double[] reValues = {10, 15, 20, 30, 40, 50, 100, 200, 500, 1000, 2000, 3000, 3300};
-    private static final double[] SMALL_RE_VALUES = {0.0001, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9.9};
-    private static final double[] SMALL_KSI_M_VALUES = {30.0 / 0.0001, 30.0, 30.0 / 2, 30.0 / 3, 30.0 / 4, 30.0 / 5,
+    private static final double[] SMALL_RE_VALUES = {0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9
+            , 1, 2, 3, 4, 5, 6, 7, 8, 9, 9.9};
+    private static final double[] SMALL_KSI_M_VALUES = {30.0 / 0.01,30.0 / 0.1,30.0 / 0.2,30.0 / 0.3,30.0 / 0.4,
+            30.0 / 0.5, 30.0 / 0.6,30.0 / 0.7,30.0 / 0.8,30.0 / 0.9, 30.0, 30.0 / 2, 30.0 / 3, 30.0 / 4, 30.0 / 5,
             30.0 / 6, 30.0 / 7, 30.0 / 8, 30.0 / 9, 30.0 / 9.9};
     private static final double[] F0_F2_RATIO_PARABOLIC = {0., 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.};
     private static final double[] KSI_M_PARABOLIC = {2.00, 1.75, 1.51, 1.30, 1.10, 0.92, 0.78, 0.63, 0.51, 0.34};
@@ -120,16 +122,20 @@ public abstract class AreaChangeCoefficients {
                     q11, q12, q21, q22);
         }
     }
+
     public static double calculateParabolicSuddenExpansionKsiM(double areaRatio) {
         return linePredictionKsiMParabolic.interpolate(areaRatio);
     }
+
     public static double calculateSharpSuddenContractionKsi(double areaRatio) {
         return 0.5 * linePredictionASharpContraction.interpolate(areaRatio);
     }
+
     public static double calculateEasedSuddenContractionKsi(double areaRatio, double rDRatio) {
         return linePredictionCollectorEndWallKsi.interpolate(rDRatio) *
                 linePredictionASharpContraction.interpolate(areaRatio);
     }
+
     public static double calculateConicalBellKsi(double alpha, double lDRatio) {
         //Граничные значения для alpha
         double alphaMin = ALPHA_CONICAL_BELL[0];
@@ -189,6 +195,7 @@ public abstract class AreaChangeCoefficients {
                     q11, q12, q21, q22);
         }
     }
+
     public static double calculateBevelSuddenContractionKsi(double areaRatio, double alpha, double lDRatio) {
         return calculateConicalBellKsi(alpha, lDRatio) *
                 linePredictionASharpContraction.interpolate(areaRatio);
