@@ -44,4 +44,12 @@ public class UniformSuddenAreaChangeTest {
         double result = uniformSuddenExpansion.calculateLocalResistanceCoefficient(50);
         assertEquals(1.6499999996673003, result);
     }
+    @Test
+    public void LocalResistanceBilinearInterpolation () {
+        UniformSuddenExpansion uniformSuddenExpansion =
+                new UniformSuddenExpansion(1.784124116, 3.568248232,
+                        15e-6, 1);
+        double result = uniformSuddenExpansion.calculateLocalResistanceCoefficient(750);
+        assertEquals(1.3250000000000002, result);
+    }
 }
