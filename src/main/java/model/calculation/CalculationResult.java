@@ -11,8 +11,8 @@ public class CalculationResult {
         BendCoefficients.calculateKDelta(0.51,41000, 0.01);
         UniformSuddenExpansion areaChange = new UniformSuddenExpansion(1,10,15e-6,1);
         areaChange.calculateHydraulicResistance(1);
-        PowerLowSuddenExpansion areaChange1 = new PowerLowSuddenExpansion(1,1.4142135624,15e-6,1,50000,2);
-        areaChange1.calculateHydraulicResistance();
+        PowerLowSuddenExpansion areaChange1 = new PowerLowSuddenExpansion(1,1.4142135624,15e-6,1,50000);
+        areaChange1.calculateHydraulicResistance(100);
         ParabolicSuddenExpansion areaChange2 = new ParabolicSuddenExpansion(1,1.4142135624,15e-6, 1., 50000);
         areaChange2.calculateHydraulicResistance();
         SharpSuddenContraction areaChange3 = new SharpSuddenContraction(1,1.4142135624,15e-6, 1., 50000);

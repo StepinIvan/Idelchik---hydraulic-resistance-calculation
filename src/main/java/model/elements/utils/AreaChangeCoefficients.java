@@ -38,9 +38,11 @@ public abstract class AreaChangeCoefficients {
             {3.10, 2.80, 2.30, 1.65, 1.35, 1.15, 0.90, 0.75, 0.65, 0.90, 0.65, 0.30, 0.25},
             {3.10, 2.70, 2.15, 1.55, 1.25, 1.05, 0.80, 0.60, 0.40, 0.60, 0.50, 0.20, 0.16}
     };
+    @Getter
     private static final double[] M_VALUES = {1.0, 1.35, 2.0, 3.0, 4.0, 7.0, Double.MAX_VALUE};
+    @Getter
     private static final double[] F0_F2_RATIO_POWER = {0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 1.0};
-
+    @Getter
     private static final double[][] KSI_M_VALUES_POWER = {
             // F0/F2: 0    0.1   0.2   0.3   0.4   0.5   0.6   0.7   0.8   1.0
             {2.70, 2.42, 2.14, 1.90, 1.66, 1.45, 1.26, 1.09, 0.94, 0.70}, // m = 1.0
@@ -62,66 +64,6 @@ public abstract class AreaChangeCoefficients {
             {0.50, 0.37, 0.27, 0.20, 0.16, 0.15, 0.25, 0.37, 0.50},  // для l/D_r = 0.15
             {0.50, 0.27, 0.18, 0.13, 0.11, 0.12, 0.23, 0.36, 0.50}   // для l/D_r = 0.60
     };
-
-    public static double calculatePowerLowSuddenExpansionKsiM(double areaRatio, double m) {
-        //Граничные значения для Re
-        double areaRatioMin = F0_F2_RATIO_POWER[0];
-        double areaRatioMax = F0_F2_RATIO_POWER[F0_F2_RATIO_POWER.length - 1];
-
-        // Определяем индексы для m с учетом границ
-        int[] mIndices;
-        if (m < M_VALUES[0]) {
-            // За левой границей массива m
-            mIndices = new int[]{0, 0};
-        } else if (m > M_VALUES[M_VALUES.length - 1]) {
-            // За правой границей массива m
-            mIndices = new int[]{M_VALUES.length - 1, M_VALUES.length - 1};
-        } else {
-            // В пределах массива m
-            mIndices = Functions.lineSearchNeighborIndices(m, M_VALUES);
-        }
-
-        // Определяем индексы для отношения площадей с учетом границ
-        int[] areaRatioIndices;
-        if (areaRatio < areaRatioMin) {
-            // За левой границей массива отношения площадей
-            areaRatioIndices = new int[]{0, 0};
-        } else if (areaRatio > areaRatioMax) {
-            // За правой границей массива отношения площадей
-            areaRatioIndices = new int[]{F0_F2_RATIO_POWER.length - 1, F0_F2_RATIO_POWER.length - 1};
-        } else {
-            // В пределах массива отношения площадей
-            areaRatioIndices = Functions.binarySearchNearestIndices(areaRatio, F0_F2_RATIO_POWER);
-        }
-
-        // Значения отношения площадей и Re для интерполяции
-        double m1 = M_VALUES[mIndices[0]];
-        double m2 = M_VALUES[mIndices[1]];
-        double areaRatio1 = F0_F2_RATIO_POWER[areaRatioIndices[0]];
-        double areaRatio2 = F0_F2_RATIO_POWER[areaRatioIndices[1]];
-
-        // Значения ξм из таблицы
-        double q11 = KSI_M_VALUES_POWER[mIndices[0]][areaRatioIndices[0]];
-        double q12 = KSI_M_VALUES_POWER[mIndices[0]][areaRatioIndices[1]];
-        double q21 = KSI_M_VALUES_POWER[mIndices[1]][areaRatioIndices[0]];
-        double q22 = KSI_M_VALUES_POWER[mIndices[1]][areaRatioIndices[1]];
-
-        if (mIndices[0] == mIndices[1] && areaRatioIndices[0] == areaRatioIndices[1]) {
-            // Оба параметра за границами или на границах - возвращаем угловое значение
-            return KSI_M_VALUES_POWER[mIndices[0]][areaRatioIndices[0]];
-        } else if (mIndices[0] == mIndices[1]) {
-            // Отношение площадей за границами, интерполируем только по Re
-            return Functions.interpolateLinear(areaRatio1, areaRatio2, q11, q12, areaRatio);
-        } else if (areaRatioIndices[0] == areaRatioIndices[1]) {
-            // Re за границами, интерполируем только по отношению площадей
-            return Functions.interpolateLinear(m1, m2, q11, q21, m);
-        } else {
-            // Оба параметра в пределах массивов - билинейная интерполяция
-            return Functions.bilinearInterpolation(m, areaRatio,
-                    m1, m2, areaRatio1, areaRatio2,
-                    q11, q12, q21, q22);
-        }
-    }
 
     public static double calculateParabolicSuddenExpansionKsiM(double areaRatio) {
         return linePredictionKsiMParabolic.interpolate(areaRatio);
