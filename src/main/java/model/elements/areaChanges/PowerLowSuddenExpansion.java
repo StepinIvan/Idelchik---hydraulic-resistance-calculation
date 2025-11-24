@@ -113,7 +113,7 @@ public class PowerLowSuddenExpansion extends AreaChange {
 
     @Override
     public String getElementType() {
-        return AreaChangeType.SUDDEN_AREA_CHANGE.toString();
+        return AreaChangeType.POWER_LAW_SUDDEN_EXPANSION.toString();
     }
 
     @Override
