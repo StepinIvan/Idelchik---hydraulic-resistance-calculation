@@ -19,6 +19,7 @@ public class PowerLowSuddenExpansion extends AreaChange {
     private double frictionResistanceCoefficient;
     @Getter
     private double lambda;
+    private double areaRatio;
 
     public PowerLowSuddenExpansion(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
                                    double m) {
@@ -28,16 +29,17 @@ public class PowerLowSuddenExpansion extends AreaChange {
         this.smallArea = Math.PI * Math.pow(smallerDiameter, 2.) / 4.;
         this.largeArea = Math.PI * Math.pow(largerDiameter, 2.) / 4.;
         this.m = m;//TODO restriction for m. m must be greater or equal 1
+        areaRatio = smallArea / largeArea;
         validateParameters();
     }
 
     public double calculateHydraulicResistance(double re) {
-        localResistanceCoefficient = calculateLocalResistanceCoefficient(smallArea / largeArea, m);
+        localResistanceCoefficient = calculateLocalResistanceCoefficient();
         frictionResistanceCoefficient = calculateFrictionResistanceCoefficient(re);
         return localResistanceCoefficient + frictionResistanceCoefficient / Math.pow((largeArea / smallArea), 2.);
     }
 
-    public double calculateLocalResistanceCoefficient(double areaRatio, double m) {
+    public double calculateLocalResistanceCoefficient() {
         double[] f0f2Ratio = AreaChangeCoefficients.getF0_F2_RATIO_POWER();
         double[] mValues = AreaChangeCoefficients.getM_VALUES();
         double[][] ksiValuesPower = AreaChangeCoefficients.getKSI_M_VALUES_POWER();
