@@ -13,8 +13,8 @@ public class CalculationResult {
         areaChange.calculateHydraulicResistance(1);
         PowerLowSuddenExpansion areaChange1 = new PowerLowSuddenExpansion(1,1.4142135624,15e-6,1,50000);
         areaChange1.calculateHydraulicResistance(100);
-        ParabolicSuddenExpansion areaChange2 = new ParabolicSuddenExpansion(1,1.4142135624,15e-6, 1., 50000);
-        areaChange2.calculateHydraulicResistance();
+        ParabolicSuddenExpansion areaChange2 = new ParabolicSuddenExpansion(1,1.4142135624,15e-6, 1.);
+        areaChange2.calculateHydraulicResistance(1);
         SharpSuddenContraction areaChange3 = new SharpSuddenContraction(1,1.4142135624,15e-6, 1., 50000);
         areaChange3.calculateHydraulicResistance();
         EasedSuddenContraction areaChange4 = new EasedSuddenContraction(1,1.4142135624,15e-6, 1., 50000,

@@ -19,7 +19,8 @@ public class PowerLowSuddenExpansion extends AreaChange {
     private double frictionResistanceCoefficient;
     @Getter
     private double lambda;
-    private double areaRatio;
+    @Getter
+    private final double areaRatio;
 
     public PowerLowSuddenExpansion(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
                                    double m) {

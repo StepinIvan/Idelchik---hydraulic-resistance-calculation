@@ -18,6 +18,8 @@ public class UniformSuddenExpansion extends AreaChange {
     private double frictionResistanceCoefficient;
     @Getter
     private double lambda;
+    @Getter
+    private final double areaRatio;
 
     public UniformSuddenExpansion(double smallerDiameter, double largerDiameter, double absolutRoughness,
                                   double length) {
@@ -26,6 +28,7 @@ public class UniformSuddenExpansion extends AreaChange {
         this.absolutRoughness = absolutRoughness;
         this.smallArea = Math.PI * Math.pow(smallerDiameter, 2.) / 4.;
         this.largeArea = Math.PI * Math.pow(largerDiameter, 2.) / 4.;
+        areaRatio = smallArea / largeArea;
         validateParameters();
     }
 
@@ -36,7 +39,6 @@ public class UniformSuddenExpansion extends AreaChange {
     }
 
     public double calculateLocalResistanceCoefficient(double re) {
-        double areaRatio = smallArea / largeArea;
         double[] reValues = AreaChangeCoefficients.getReValues();
         double[] f0f2Ratio = AreaChangeCoefficients.getF0_F2_RATIO_UNIFORM();
         double[][] ksiMValues = AreaChangeCoefficients.getKSI_M_VALUES();
