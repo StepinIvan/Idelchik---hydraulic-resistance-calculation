@@ -13,7 +13,7 @@ public class BevelSuddenContraction extends AreaChange {
 
     public BevelSuddenContraction(double smallerDiameter, double largerDiameter, double absolutRoughness, double length,
                                   double re, double angle, double bevelLength) {
-        super("Сужение потока с срезанной под углом кромкой", smallerDiameter,
+        super("Сужение (внезапное) потока с срезанной под углом кромкой", smallerDiameter,
                 largerDiameter, length);
         this.absolutRoughness = absolutRoughness;
         this.re = re;
