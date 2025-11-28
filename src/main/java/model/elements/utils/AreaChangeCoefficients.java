@@ -28,6 +28,7 @@ public abstract class AreaChangeCoefficients {
     @Getter
     private static final LinearInterpolator linePredictionASharpContraction =
             new LinearInterpolator(F0_F1_SHARP, A_SHARP);
+    @Getter
     private static final LinearInterpolator linePredictionCollectorEndWallKsi =
             new LinearInterpolator(R_D_RATIO, KSI_COLLECTOR_END_WALL);
 

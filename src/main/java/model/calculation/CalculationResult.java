@@ -17,9 +17,9 @@ public class CalculationResult {
         areaChange2.calculateHydraulicResistance(1);
         SharpSuddenContraction areaChange3 = new SharpSuddenContraction(1,1.4142135624,15e-6, 1.);
         areaChange3.calculateHydraulicResistance(1000);
-        EasedSuddenContraction areaChange4 = new EasedSuddenContraction(1,1.4142135624,15e-6, 1., 50000,
+        EasedSuddenContraction areaChange4 = new EasedSuddenContraction(1,1.4142135624,15e-6, 1.,
                 0.04);
-        areaChange4.calculateHydraulicResistance();
+        areaChange4.calculateHydraulicResistance(1000);
         BevelSuddenContraction areaChange5 = new BevelSuddenContraction(1,1.4142135624,15e-6, 1., 50000,
                 40, 0.025);
         areaChange5.calculateHydraulicResistance();

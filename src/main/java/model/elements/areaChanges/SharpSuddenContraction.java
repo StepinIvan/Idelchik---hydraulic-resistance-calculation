@@ -38,7 +38,7 @@ public class SharpSuddenContraction extends AreaChange {
     }
 
     public double calculateFrictionResistanceCoefficient(double re) {
-        double relativeRoughness = absolutRoughness / largerDiameter;
+        double relativeRoughness = absolutRoughness / smallerDiameter;
         if (absolutRoughness == 0) {
             lambda = TubeCoefficients.calculateSmoothPipeLambda(re);
         } else {
