@@ -25,6 +25,7 @@ public abstract class AreaChangeCoefficients {
     @Getter
     private static final LinearInterpolator linePredictionKsiMParabolic =
             new LinearInterpolator(F0_F2_RATIO_PARABOLIC, KSI_M_PARABOLIC);
+    @Getter
     private static final LinearInterpolator linePredictionASharpContraction =
             new LinearInterpolator(F0_F1_SHARP, A_SHARP);
     private static final LinearInterpolator linePredictionCollectorEndWallKsi =
