@@ -1,3 +1,5 @@
+package AreaChange.Contractions;
+
 import model.elements.areaChanges.EasedSuddenContraction;
 import model.elements.areaChanges.SharpSuddenContraction;
 import org.junit.jupiter.api.Test;

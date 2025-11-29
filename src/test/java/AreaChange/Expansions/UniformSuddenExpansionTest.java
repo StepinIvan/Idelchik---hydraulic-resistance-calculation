@@ -1,9 +1,11 @@
+package AreaChange.Expansions;
+
 import model.elements.areaChanges.UniformSuddenExpansion;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UniformSuddenAreaChangeTest {
+public class UniformSuddenExpansionTest {
     @Test
     public void LocalResistanceLeftBoardUpper () {
         UniformSuddenExpansion uniformSuddenExpansion =

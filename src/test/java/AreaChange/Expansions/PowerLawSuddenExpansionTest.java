@@ -1,5 +1,6 @@
+package AreaChange.Expansions;
+
 import model.elements.areaChanges.PowerLowSuddenExpansion;
-import model.elements.areaChanges.UniformSuddenExpansion;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
