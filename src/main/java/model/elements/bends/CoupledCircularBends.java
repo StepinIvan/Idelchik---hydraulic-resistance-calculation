@@ -11,7 +11,7 @@ public class CoupledCircularBends extends Bend {
 
     public CoupledCircularBends(double diameter, double bendAngle, double bendCurvatureRadius, double absolutRoughness,
                                 double re, double lDRatio) {
-        super("Сопряженные отводы (круглые)", bendAngle, bendCurvatureRadius);
+        super("Сопряженные отводы (круглые) S образной формы", bendAngle, bendCurvatureRadius);
         this.absolutRoughness = absolutRoughness;
         this.re = re;
         this.diameter = diameter;
