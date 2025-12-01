@@ -56,9 +56,11 @@ public abstract class AreaChangeCoefficients {
             {1.06, 0.86, 0.69, 0.53, 0.41, 0.29, 0.19, 0.12, 0.06, 0.02}, // m = 7.0
             {1.00, 0.82, 0.64, 0.48, 0.36, 0.25, 0.16, 0.09, 0.04, 0.00}  // m = ∞ (Double.MAX_VALUE)
     };
-
+    @Getter
     private static final double[] L_D_RATIO = {0.025, 0.050, 0.075, 0.10, 0.15, 0.60};
+    @Getter
     private static final double[] ALPHA_CONICAL_BELL = {0, 10, 20, 30, 40, 60, 100, 140, 180};
+    @Getter
     private static final double[][] KSI_CONICAL_BELL = {
             {0.50, 0.47, 0.45, 0.43, 0.41, 0.40, 0.42, 0.45, 0.50},  // для l/D_r = 0.025
             {0.50, 0.45, 0.41, 0.36, 0.33, 0.30, 0.35, 0.42, 0.50},  // для l/D_r = 0.050

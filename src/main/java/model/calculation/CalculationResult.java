@@ -20,8 +20,8 @@ public class CalculationResult {
         EasedSuddenContraction areaChange4 = new EasedSuddenContraction(1,1.4142135624,15e-6, 1.,
                 0.04);
         areaChange4.calculateHydraulicResistance(1000);
-        BevelSuddenContraction areaChange5 = new BevelSuddenContraction(1,1.4142135624,15e-6, 1., 50000,
+        BevelSuddenContraction areaChange5 = new BevelSuddenContraction(1,1.4142135624,15e-6, 1.,
                 40, 0.025);
-        areaChange5.calculateHydraulicResistance();
+        areaChange5.calculateHydraulicResistance(40000);
     }
 }
