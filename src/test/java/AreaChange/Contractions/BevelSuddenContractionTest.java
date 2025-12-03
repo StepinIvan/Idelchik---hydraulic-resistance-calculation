@@ -13,38 +13,62 @@ public class BevelSuddenContractionTest {
                 new BevelSuddenContraction(1, 1e300,
                         15e-6, 1,0,0.01);
         double result = bevelSuddenContraction.calculateLocalResistanceCoefficient();
-        assertEquals(2., result);
+        assertEquals(0.5, result);
     }
-//    @Test
-//    public void LocalResistanceRightBoard () {
-//        ParabolicSuddenExpansion parabolicSuddenExpansion =
-//                new ParabolicSuddenExpansion(1.2, 1,
-//                        15e-6, 1);
-//        double result = parabolicSuddenExpansion.calculateLocalResistanceCoefficient();
-//        assertEquals(0.34, result);
-//    }
-//    @Test
-//    public void LocalResistanceExactValue () {
-//        ParabolicSuddenExpansion parabolicSuddenExpansion =
-//                new ParabolicSuddenExpansion(1.009253009, 1.128379167,
-//                        15e-6, 1);
-//        double result = parabolicSuddenExpansion.calculateLocalResistanceCoefficient();
-//        assertEquals(0.509999999626242, result);
-//    }
-//    @Test
-//    public void LocalResistanceLinearInterpolation1() {
-//        ParabolicSuddenExpansion parabolicSuddenExpansion =
-//                new ParabolicSuddenExpansion(0.731273279, 1.128379167,
-//                        15e-6, 1);
-//        double result = parabolicSuddenExpansion.calculateLocalResistanceCoefficient();
-//        assertEquals(1.0640000001679866, result);
-//    }
-//    @Test
-//    public void LocalResistanceLinearInterpolation2() {
-//        ParabolicSuddenExpansion parabolicSuddenExpansion =
-//                new ParabolicSuddenExpansion(0.996557497, 1.128379167,
-//                        15e-6, 1);
-//        double result = parabolicSuddenExpansion.calculateLocalResistanceCoefficient();
-//        assertEquals(0.5339999999042387, result);
-//    }
+    @Test
+    public void LocalResistanceLeftLowerBoard () {
+        BevelSuddenContraction bevelSuddenContraction =
+                new BevelSuddenContraction(1, 1e300,
+                        15e-6, 1,0,2);
+        double result = bevelSuddenContraction.calculateLocalResistanceCoefficient();
+        assertEquals(0.5, result);
+    }
+    @Test
+    public void LocalResistanceRightUpperBoard () {
+        BevelSuddenContraction bevelSuddenContraction =
+                new BevelSuddenContraction(1, 1e300,
+                        15e-6, 1,190,0.01);
+        double result = bevelSuddenContraction.calculateLocalResistanceCoefficient();
+        assertEquals(0.5, result);
+    }
+    @Test
+    public void LocalResistanceRightLowerBoard () {
+        BevelSuddenContraction bevelSuddenContraction =
+                new BevelSuddenContraction(1, 1e300,
+                        15e-6, 1,190,2);
+        double result = bevelSuddenContraction.calculateLocalResistanceCoefficient();
+        assertEquals(0.5, result);
+    }
+    @Test
+    public void LocalResistanceExactValue () {
+        BevelSuddenContraction bevelSuddenContraction =
+                new BevelSuddenContraction(1, 1e300,
+                        15e-6, 1,40,0.075);
+        double result = bevelSuddenContraction.calculateLocalResistanceCoefficient();
+        assertEquals(0.26, result);
+    }
+    @Test
+    public void LocalResistanceLinearInterpolation1 () {
+        BevelSuddenContraction bevelSuddenContraction =
+                new BevelSuddenContraction(1, 1e300,
+                        15e-6, 1,40,0.055);
+        double result = bevelSuddenContraction.calculateLocalResistanceCoefficient();
+        assertEquals(0.316, result);
+    }
+    @Test
+    public void LocalResistanceLinearInterpolation2 () {
+        BevelSuddenContraction bevelSuddenContraction =
+                new BevelSuddenContraction(1, 1e300,
+                        15e-6, 1,80,0.075);
+        double result = bevelSuddenContraction.calculateLocalResistanceCoefficient();
+        assertEquals(0.265, result);
+    }
+    @Test
+    public void LocalResistanceBilinearInterpolation() {
+        BevelSuddenContraction bevelSuddenContraction =
+                new BevelSuddenContraction(1, 1e300,
+                        15e-6, 1,70,0.055);
+        double result = bevelSuddenContraction.calculateLocalResistanceCoefficient();
+        assertEquals(0.2995, result);
+    }
 }
