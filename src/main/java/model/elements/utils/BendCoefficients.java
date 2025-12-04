@@ -1,5 +1,7 @@
 package model.elements.utils;
 
+import lombok.Getter;
+
 public abstract class BendCoefficients {
     private static final double TRANSITION_REGION = 1000.;
     private static final double[] BEND_ANGLE_FOR_A1 = {0., 20., 30., 45., 60., 75., 90., 110., 130., 150., 180.};
@@ -13,7 +15,9 @@ public abstract class BendCoefficients {
     private static final double[] A0_B0_RATIO = {0.25, 0.50, 0.75, 1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0};
 
     private static final double[] C1 = {1.30, 1.17, 1.09, 1.00, 0.90, 0.85, 0.85, 0.90, 0.95, 0.98, 1.00, 1.00};
+    @Getter
     private static final LinearInterpolator linePredictionA1 = new LinearInterpolator(BEND_ANGLE_FOR_A1, A1);
+    @Getter
     private static final LinearInterpolator linePredictionB1 = new LinearInterpolator(R0_D0_RATIO, B1);
     private static final LinearInterpolator linePredictionC1 = new LinearInterpolator(A0_B0_RATIO, C1);
     private static final double RE_LOW = 3_000.0;//It'll be used further for warning
@@ -28,8 +32,11 @@ public abstract class BendCoefficients {
             {1.67, 1.58, 1.49, 1.40, 1.34, 1.26, 1.21, 1.19, 1.17, 1.14, 1.06, 1.0},
             {2.00, 1.89, 1.77, 1.64, 1.56, 1.46, 1.38, 1.30, 1.15, 1.02, 1.0, 1.0}
     };
+    @Getter
     private static final double[] ANGLES_COUPLED_BENDS = {15, 30, 45, 60, 75, 90, 120};
+    @Getter
     private static final double[] L_D_RATIO_COUPLED_BENDS = {0, 1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 25, 40};
+    @Getter
     private static final double[][] A_COUPLED_BENDS = {
             {0.20, 0.42, 0.60, 0.78, 0.94, 1.16, 1.20, 1.15, 1.08, 1.05, 1.02, 1.0, 1.10, 1.25, 2.0},
             {0.40, 0.65, 0.88, 1.16, 1.20, 1.18, 1.12, 1.06, 1.06, 1.15, 1.28, 1.40, 1.50, 1.70, 2.0},
