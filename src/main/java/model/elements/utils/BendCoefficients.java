@@ -19,6 +19,7 @@ public abstract class BendCoefficients {
     private static final LinearInterpolator linePredictionA1 = new LinearInterpolator(BEND_ANGLE_FOR_A1, A1);
     @Getter
     private static final LinearInterpolator linePredictionB1 = new LinearInterpolator(R0_D0_RATIO, B1);
+    @Getter
     private static final LinearInterpolator linePredictionC1 = new LinearInterpolator(A0_B0_RATIO, C1);
     private static final double RE_LOW = 3_000.0;//It'll be used further for warning
     private static final double RE_MID = 40_000.0;
