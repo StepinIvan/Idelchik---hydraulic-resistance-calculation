@@ -55,4 +55,34 @@ public class CircularBendTests {
         double result = linePredictionB1.interpolate(22);
         assertEquals(0.048, result);
     }
+    @Test
+    public void C1LeftBoard () {
+        LinearInterpolator linePredictionC1 = BendCoefficients.getLinePredictionC1();
+        double result = linePredictionC1.interpolate(0.2);
+        assertEquals(1.3, result);
+    }
+    @Test
+    public void C1RightBoard () {
+        LinearInterpolator linePredictionC1 = BendCoefficients.getLinePredictionC1();
+        double result = linePredictionC1.interpolate(10);
+        assertEquals(1., result);
+    }
+    @Test
+    public void C1ExactValue () {
+        LinearInterpolator linePredictionC1 = BendCoefficients.getLinePredictionC1();
+        double result = linePredictionC1.interpolate(6);
+        assertEquals(0.98, result);
+    }
+    @Test
+    public void C1Interpolation1 () {
+        LinearInterpolator linePredictionC1 = BendCoefficients.getLinePredictionC1();
+        double result = linePredictionC1.interpolate(1.1);
+        assertEquals(0.98, result);
+    }
+    @Test
+    public void C1Interpolation2 () {
+        LinearInterpolator linePredictionC1 = BendCoefficients.getLinePredictionC1();
+        double result = linePredictionC1.interpolate(5.7);
+        assertEquals(0.971, result);
+    }
 }
